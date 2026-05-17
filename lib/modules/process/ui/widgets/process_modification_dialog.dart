@@ -42,13 +42,16 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
     );
 
     return () => AlertDialog(
+      constraints: const BoxConstraints(maxWidth: 1200),
+      scrollable: true,
       title: Text(props().dialogTitle),
       content: SizedBox(
-        width: 420,
+        width: double.maxFinite,
         child: Form(
           key: formKey,
           child: Column(
             mainAxisSize: .min,
+            crossAxisAlignment: .stretch,
             spacing: 16,
             children: [
               TextFormField(
@@ -79,8 +82,8 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
               ),
               TextFormField(
                 controller: commandController,
-                minLines: 2,
-                maxLines: 4,
+                minLines: 5,
+                maxLines: 10,
                 decoration: const InputDecoration(
                   labelText: 'Команда запуска',
                   alignLabelWithHint: true,
