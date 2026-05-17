@@ -120,14 +120,63 @@ class LaunchCommand {
   const LaunchCommand({required this.executable, required this.arguments});
 }
 
-LaunchCommand buildLaunchCommand(String command) {
-  if (command.trim().isEmpty) {
-    throw StateError('Start command is empty.');
+LaunchCommand buildLaunchCommand({required String executable, required String arguments}) {
+  final normalizedExecutable = executable.trim();
+
+  if (normalizedExecutable.isEmpty) {
+    throw StateError('Executable is empty.');
   }
 
-  if (Platform.isWindows) {
-    return LaunchCommand(executable: 'cmd.exe', arguments: ['/c', command]);
+  return LaunchCommand(executable: normalizedExecutable, arguments: _parseArguments(arguments));
+}
+
+List<String> _parseArguments(String input) {
+  final result = <String>[];
+  final buffer = StringBuffer();
+
+  String? quote;
+  var tokenStarted = false;
+
+  for (var i = 0; i < input.length; i += 1) {
+    final char = input[i];
+
+    if (quote != null) {
+      if (char == quote) {
+        quote = null;
+      } else {
+        buffer.write(char);
+      }
+
+      tokenStarted = true;
+      continue;
+    }
+
+    if (char == '"' || char == "'") {
+      quote = char;
+      tokenStarted = true;
+      continue;
+    }
+
+    if (char.trim().isEmpty) {
+      if (tokenStarted) {
+        result.add(buffer.toString());
+        buffer.clear();
+        tokenStarted = false;
+      }
+      continue;
+    }
+
+    buffer.write(char);
+    tokenStarted = true;
   }
 
-  return LaunchCommand(executable: '/bin/sh', arguments: ['-lc', 'exec $command']);
+  if (quote != null) {
+    throw FormatException('Unclosed quote: $quote');
+  }
+
+  if (tokenStarted) {
+    result.add(buffer.toString());
+  }
+
+  return result;
 }

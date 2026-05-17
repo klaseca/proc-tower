@@ -18,11 +18,17 @@ class ProcessRuntime {
 
     _process.setStatus(ProcessStatus.starting);
     _process.appendLog('START ${_process.name.peek}');
-    _process.appendLog('CMD: ${_process.startCommand.peek}');
+    _process.appendLog('EXEC: ${_process.executable.peek}');
+    if (_process.arguments.peek.isNotEmpty) {
+      _process.appendLog('ARGS: ${_process.arguments.peek}');
+    }
 
     try {
       final runningHandle = await ProcessExecution.start(
-        launchCommand: buildLaunchCommand(_process.startCommand.peek),
+        launchCommand: buildLaunchCommand(
+          executable: _process.executable.peek,
+          arguments: _process.arguments.peek,
+        ),
       );
 
       _runningHandle = runningHandle;

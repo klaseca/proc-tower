@@ -7,7 +7,8 @@ abstract final class ProcessMapper {
       id: record.id,
       name: record.name,
       launchType: _parseLaunchType(record.launchType),
-      startCommand: record.startCommand,
+      executable: record.executable,
+      arguments: record.arguments,
     );
   }
 
@@ -16,7 +17,8 @@ abstract final class ProcessMapper {
       id: process.id,
       name: process.name.peek,
       launchType: process.launchType.peek.name,
-      startCommand: process.startCommand.peek,
+      executable: process.executable.peek,
+      arguments: process.arguments.peek,
     );
   }
 

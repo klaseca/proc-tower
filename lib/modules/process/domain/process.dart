@@ -7,7 +7,8 @@ class Process {
   final String id;
   final Signal<String> name;
   final Signal<ProcessLaunchType> launchType;
-  final Signal<String> startCommand;
+  final Signal<String> executable;
+  final Signal<String> arguments;
   final Signal<ProcessStatus> status;
   final ProcessLogs logs;
 
@@ -15,12 +16,14 @@ class Process {
     String? id,
     required String name,
     ProcessLaunchType launchType = ProcessLaunchType.manual,
-    required String startCommand,
+    required String executable,
+    String arguments = '',
     ProcessStatus status = ProcessStatus.stopped,
   }) : id = id ?? nanoid(),
        name = Signal(name),
        launchType = Signal(launchType),
-       startCommand = Signal(startCommand),
+       executable = Signal(executable),
+       arguments = Signal(arguments),
        status = Signal(status),
        logs = ProcessLogs();
 

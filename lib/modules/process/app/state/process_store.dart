@@ -33,12 +33,14 @@ class ProcessStore {
   Future<void> add({
     required String name,
     required ProcessLaunchType launchType,
-    required String startCommand,
+    required String executable,
+    required String arguments,
   }) async {
     final process = Process(
       name: name.trim(),
       launchType: launchType,
-      startCommand: startCommand.trim(),
+      executable: executable.trim(),
+      arguments: arguments.trim(),
     );
 
     await _repo.saveProcess(process);
@@ -49,7 +51,8 @@ class ProcessStore {
     required String processId,
     required String name,
     required ProcessLaunchType launchType,
-    required String startCommand,
+    required String executable,
+    required String arguments,
   }) async {
     final currentProcess = _getOrThrow(processId);
 
@@ -57,14 +60,16 @@ class ProcessStore {
       id: currentProcess.id,
       name: name.trim(),
       launchType: launchType,
-      startCommand: startCommand.trim(),
+      executable: executable.trim(),
+      arguments: arguments.trim(),
     );
 
     await _repo.saveProcess(nextProcess);
     currentProcess.update((process) {
       process.name.value = nextProcess.name.peek;
       process.launchType.value = nextProcess.launchType.peek;
-      process.startCommand.value = nextProcess.startCommand.peek;
+      process.executable.value = nextProcess.executable.peek;
+      process.arguments.value = nextProcess.arguments.peek;
     });
   }
 
@@ -123,7 +128,8 @@ class ProcessStore {
       currentProcess.update((process) {
         process.name.value = storedProcess.name.peek;
         process.launchType.value = storedProcess.launchType.peek;
-        process.startCommand.value = storedProcess.startCommand.peek;
+        process.executable.value = storedProcess.executable.peek;
+        process.arguments.value = storedProcess.arguments.peek;
       });
       nextProcesses.add(currentProcess);
     }

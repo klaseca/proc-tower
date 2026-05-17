@@ -5,13 +5,15 @@ class ProcessDaoRecord {
   final String id;
   final String name;
   final String launchType;
-  final String startCommand;
+  final String executable;
+  final String arguments;
 
   const ProcessDaoRecord({
     required this.id,
     required this.name,
     required this.launchType,
-    required this.startCommand,
+    required this.executable,
+    required this.arguments,
   });
 
   factory ProcessDaoRecord.fromJson(Map<String, dynamic> json) {
@@ -19,12 +21,19 @@ class ProcessDaoRecord {
       id: json['id'] as String,
       name: json['name'] as String,
       launchType: json['launchType'] as String,
-      startCommand: json['startCommand'] as String,
+      executable: json['executable'] as String,
+      arguments: json['arguments'] as String? ?? '',
     );
   }
 
   Map<String, Object?> toJson() {
-    return {'id': id, 'name': name, 'launchType': launchType, 'startCommand': startCommand};
+    return {
+      'id': id,
+      'name': name,
+      'launchType': launchType,
+      'executable': executable,
+      'arguments': arguments,
+    };
   }
 }
 

@@ -50,7 +50,8 @@ UseProcessesDataGrid useProcessesDataGrid() {
         initialInput: ProcessForm(
           name: existing.name.value,
           launchType: existing.launchType.value,
-          startCommand: existing.startCommand.value,
+          executable: existing.executable.value,
+          arguments: existing.arguments.value,
         ),
       ),
     );
@@ -62,7 +63,8 @@ UseProcessesDataGrid useProcessesDataGrid() {
         processId: processId,
         name: updatedProcess.name,
         launchType: updatedProcess.launchType,
-        startCommand: updatedProcess.startCommand,
+        executable: updatedProcess.executable,
+        arguments: updatedProcess.arguments,
       );
     } catch (_) {
       showError('Не удалось сохранить процесс.');

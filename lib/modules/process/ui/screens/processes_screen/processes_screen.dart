@@ -30,7 +30,8 @@ class ProcessesScreen extends SetupWidget<ProcessesScreen> {
         await processStore.add(
           name: process.name,
           launchType: process.launchType,
-          startCommand: process.startCommand,
+          executable: process.executable,
+          arguments: process.arguments,
         );
       } catch (_) {
         showError('Не удалось добавить процесс.');

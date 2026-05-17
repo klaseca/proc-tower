@@ -8,9 +8,15 @@ import '../process_ui_labels.dart';
 class ProcessForm {
   final String name;
   final ProcessLaunchType launchType;
-  final String startCommand;
+  final String executable;
+  final String arguments;
 
-  const ProcessForm({required this.name, required this.launchType, required this.startCommand});
+  const ProcessForm({
+    required this.name,
+    required this.launchType,
+    required this.executable,
+    required this.arguments,
+  });
 }
 
 class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
@@ -29,7 +35,8 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
   setup(context, props) {
     final formKey = GlobalKey<FormState>();
     final nameController = useTextEditingController(text: props().initialInput?.name);
-    final commandController = useTextEditingController(text: props().initialInput?.startCommand);
+    final executableController = useTextEditingController(text: props().initialInput?.executable);
+    final argumentsController = useTextEditingController(text: props().initialInput?.arguments);
     final launchType = useSignal(props().initialInput?.launchType ?? .manual);
     final buttonTextStyle = Theme.of(context).textTheme.labelLarge?.copyWith(height: 1);
     final cancelButtonStyle = TextButton.styleFrom(
@@ -81,20 +88,24 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
                 },
               ),
               TextFormField(
-                controller: commandController,
-                minLines: 5,
-                maxLines: 10,
-                decoration: const InputDecoration(
-                  labelText: 'Команда запуска',
-                  alignLabelWithHint: true,
-                ),
+                controller: executableController,
+                decoration: const InputDecoration(labelText: 'Исполняемый файл'),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Укажи команду запуска';
+                    return 'Укажи исполняемый файл';
                   }
 
                   return null;
                 },
+              ),
+              TextFormField(
+                controller: argumentsController,
+                minLines: 5,
+                maxLines: 10,
+                decoration: const InputDecoration(
+                  labelText: 'Аргументы запуска',
+                  alignLabelWithHint: true,
+                ),
               ),
             ],
           ),
@@ -120,7 +131,8 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
                 ProcessForm(
                   name: nameController.text.trim(),
                   launchType: launchType.value,
-                  startCommand: commandController.text.trim(),
+                  executable: executableController.text.trim(),
+                  arguments: argumentsController.text.trim(),
                 ),
               );
             },
