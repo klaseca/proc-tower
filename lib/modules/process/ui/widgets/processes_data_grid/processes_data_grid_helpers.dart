@@ -195,7 +195,7 @@ RowWrapper createProcessesDataGridRowWrapper(ProcessLogsExpandedGetter isProcess
                       thumbVisibility: true,
                       child: SingleChildScrollView(
                         controller: logsScrollController,
-                        child: Text(
+                        child: SelectableText(
                           logsText,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
