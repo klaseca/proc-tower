@@ -47,7 +47,7 @@ class SystemApiManager with TrayListener, WindowListener {
   }
 
   Future<void> launchToTray() async {
-    await windowManager.waitUntilReadyToShow(null, () => unawaited(_createTray()));
+    await _createTray();
   }
 
   Future<void> _initialize() async {
@@ -56,6 +56,7 @@ class SystemApiManager with TrayListener, WindowListener {
     trayManager.addListener(this);
     windowManager.addListener(this);
     await windowManager.setPreventClose(true);
+    await windowManager.waitUntilReadyToShow(WindowOptions(center: true));
   }
 
   Future<void> _showWindow() async {
