@@ -1,8 +1,18 @@
+<p align="center">
+  <img src="assets/logo.png" width="100" alt="Logo" />
+</p>
+
 # Proc Tower
 
 Proc Tower is a desktop app for managing custom background processes on Windows, Linux, and macOS.
 
 It lets you keep a list of commands, start and stop them from the UI, inspect their current status, and view process logs
+
+## Screenshots
+
+<div align="center">
+  <img src="assets/main_window.png" width="40%" /> <img src="assets/modification_dialog.png" width="40%" />
+</div>
 
 ## Run the project
 
