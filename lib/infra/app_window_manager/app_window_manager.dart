@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
-class SystemApiManager with TrayListener, WindowListener {
-  var _isDisposed = false;
+class AppWindowManager with TrayListener, WindowListener {
   var _isExiting = false;
   var _hasTray = false;
+  Future<void> Function()? onExit;
 
-  SystemApiManager._();
+  AppWindowManager._();
 
   @override
   void onTrayIconMouseDown() async {
@@ -26,7 +26,7 @@ class SystemApiManager with TrayListener, WindowListener {
   void onTrayMenuItemClick(MenuItem menuItem) async {
     switch (menuItem.key) {
       case _exitAppMenuItemKey:
-        await _exitApp();
+        await destroy();
     }
   }
 
@@ -39,11 +39,13 @@ class SystemApiManager with TrayListener, WindowListener {
     await _hideWindow();
   }
 
-  Future<void> dispose() async {
-    _isDisposed = true;
+  Future<void> destroy() async {
+    _isExiting = true;
     trayManager.removeListener(this);
     windowManager.removeListener(this);
+    await onExit?.call();
     await _destroyTray();
+    await windowManager.destroy();
   }
 
   Future<void> launchToTray() async {
@@ -51,8 +53,6 @@ class SystemApiManager with TrayListener, WindowListener {
   }
 
   Future<void> _initialize() async {
-    if (_isDisposed) return;
-
     trayManager.addListener(this);
     windowManager.addListener(this);
     await windowManager.setPreventClose(true);
@@ -73,12 +73,6 @@ class SystemApiManager with TrayListener, WindowListener {
   Future<void> _hideWindow() async {
     await _createTray();
     await windowManager.hide();
-  }
-
-  Future<void> _exitApp() async {
-    _isExiting = true;
-    await _destroyTray();
-    await windowManager.destroy();
   }
 
   Future<void> _createTray() async {
@@ -116,14 +110,14 @@ class SystemApiManager with TrayListener, WindowListener {
 
   static const _exitAppMenuItemKey = 'exit_app';
 
-  static Future<SystemApiManager>? _instance;
+  static Future<AppWindowManager>? _instance;
 
-  static Future<SystemApiManager> get instance {
+  static Future<AppWindowManager> get instance {
     return _instance ??= _create();
   }
 
-  static Future<SystemApiManager> _create() async {
-    final controller = SystemApiManager._();
+  static Future<AppWindowManager> _create() async {
+    final controller = AppWindowManager._();
     await controller._initialize();
     return controller;
   }

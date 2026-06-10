@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'infra/system_api/system_api_manager.dart';
-import 'infra/system_api/system_api_manager_bootstrap.dart';
+import 'infra/app_window_manager/app_window_manager.dart';
+import 'infra/app_window_manager/app_window_manager_bootstrap.dart';
 import 'modules/process/process.dart';
 import 'modules/settings/settings.dart';
 import 'ui/layouts/main_layout.dart';
@@ -12,12 +12,13 @@ import 'ui/layouts/main_layout.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
-  final systemApiManager = await SystemApiManager.instance;
-  await systemApiManager.launchToTray();
+  final appWindowManager = await AppWindowManager.instance;
+  appWindowManager.onExit = () => processStore.dispose();
+  await appWindowManager.launchToTray();
 
   runApp(
     ProviderScope(
-      providers: [themeProvider, processStoreProvider, systemApiManagerProvider(systemApiManager)],
+      providers: [themeProvider, processStoreProvider, appWindowManagerProvider(appWindowManager)],
       child: const App(),
     ),
   );
