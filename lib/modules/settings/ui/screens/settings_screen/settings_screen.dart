@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:jolt_setup/jolt_setup.dart';
 
+import '/ui/hooks/use_notification.dart';
 import '../../../settings_bootstrap.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends SetupWidget<SettingsScreen> {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final themeMode = themeProvider.of(context);
+  setup(context, props) {
+    final showError = useNotification();
+    final settingsStore = settingsStoreProvider.of(context);
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
+    Future<void> changeThemeMode(Set<ThemeMode> selection) async {
+      try {
+        await settingsStore.setThemeMode(selection.first);
+      } catch (_) {
+        showError('Не удалось сохранить настройки.');
+      }
+    }
+
+    return () => Scaffold(
       appBar: AppBar(title: const Text('Настройки')),
       body: Padding(
         padding: const .all(16),
@@ -40,8 +51,8 @@ class SettingsScreen extends StatelessWidget {
                     ],
                   ),
                   SegmentedButton(
-                    selected: {themeMode.value},
-                    onSelectionChanged: (selection) => themeMode.value = selection.first,
+                    selected: {settingsStore.themeMode.value},
+                    onSelectionChanged: changeThemeMode,
                     segments: [
                       ButtonSegment(
                         value: ThemeMode.system,

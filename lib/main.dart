@@ -12,13 +12,20 @@ import 'ui/layouts/main_layout.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
+
+  try {
+    await settingsStore.restore();
+  } catch (error) {
+    debugPrint('Failed to restore settings: $error');
+  }
+
   final appWindowManager = await AppWindowManager.instance;
   appWindowManager.onExit = () => processStore.dispose();
   await appWindowManager.launchToTray();
 
   runApp(
     ProviderScope(
-      providers: [themeProvider, processStoreProvider, appWindowManagerProvider(appWindowManager)],
+      providers: [settingsStoreProvider, processStoreProvider, appWindowManagerProvider(appWindowManager)],
       child: const App(),
     ),
   );
@@ -29,7 +36,7 @@ class App extends SetupWidget<App> {
 
   @override
   setup(context, props) {
-    final themeMode = themeProvider.of(context);
+    final settingsStore = settingsStoreProvider.of(context);
 
     return () => MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -38,7 +45,7 @@ class App extends SetupWidget<App> {
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: .dark),
       ),
-      themeMode: themeMode.value,
+      themeMode: settingsStore.themeMode.value,
       home: const MainLayout(),
     );
   }
