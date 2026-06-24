@@ -1,0 +1,114 @@
+name: Release Desktop Builds
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - github-release
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: windows
+            artifact_name: proc-tower-windows-x64
+          - os: ubuntu-latest
+            target: linux
+            artifact_name: proc-tower-linux-x64
+          - os: macos-latest
+            target: macos
+            artifact_name: proc-tower-macos
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.41.7
+          cache: true
+
+      - name: Install Linux build dependencies
+        if: matrix.target == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
+      - name: Get packages
+        run: flutter pub get
+
+      - name: Build app
+        run: flutter build ${{ matrix.target }} --release
+
+      - name: Package Windows build
+        if: matrix.target == 'windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Compress-Archive `
+            -Path build/windows/x64/runner/Release/* `
+            -DestinationPath dist/${{ matrix.artifact_name }}.zip
+
+      - name: Package Linux build
+        if: matrix.target == 'linux'
+        run: |
+          mkdir -p dist
+          tar -C build/linux/x64/release/bundle -czf dist/${{ matrix.artifact_name }}.tar.gz .
+
+      - name: Package macOS build
+        if: matrix.target == 'macos'
+        run: |
+          mkdir -p dist
+          ditto -c -k --sequesterRsrc --keepParent \
+            build/macos/Build/Products/Release/proc_tower.app \
+            dist/${{ matrix.artifact_name }}.zip
+
+      - name: Upload packaged artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download packaged artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          shopt -s globstar nullglob
+          assets=(release-assets/**/*)
+
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            gh release upload "$TAG_NAME" "${assets[@]}" --clobber
+          else
+            gh release create "$TAG_NAME" "${assets[@]}" --verify-tag --generate-notes
+          fi
