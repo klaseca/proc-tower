@@ -5,10 +5,10 @@ import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:trina_grid/trina_grid.dart';
 
+import '/i18n/strings.g.dart';
 import '/ui/hooks/use_notification.dart';
 import '../../../process_bootstrap.dart';
 import '../../widgets/process_modification_dialog.dart';
-
 import 'processes_data_grid_helpers.dart';
 
 @defineHook
@@ -34,19 +34,20 @@ UseProcessesDataGrid useProcessesDataGrid() {
 
   Future<void> editProcess(ProcessColumnRendererContext rendererContext) async {
     final processId = rendererContext.data.id;
-
     final existing = processStore.get(processId);
 
     if (existing == null) {
-      showError('Не удалось найти процесс.');
+      showError(context.tr.processes.errors.notFound);
       return;
     }
 
+    final saveFailedMessage = context.tr.processes.errors.saveFailed;
+
     final updatedProcess = await showDialog<ProcessForm>(
       context: context,
-      builder: (dialogContext) => ProcessModificationDialog(
-        dialogTitle: 'Редактировать процесс',
-        submitLabel: 'Сохранить',
+      builder: (_) => ProcessModificationDialog(
+        dialogTitle: context.tr.processes.dialog.editTitle,
+        submitLabel: context.tr.common.save,
         initialInput: ProcessForm(
           name: existing.name.value,
           launchType: existing.launchType.value,
@@ -67,7 +68,7 @@ UseProcessesDataGrid useProcessesDataGrid() {
         arguments: updatedProcess.arguments,
       );
     } catch (_) {
-      showError('Не удалось сохранить процесс.');
+      showError(saveFailedMessage);
     }
   }
 
@@ -120,20 +121,21 @@ UseProcessesDataGrid useProcessesDataGrid() {
         ..notifyListeners();
     },
     columns: createProcessesDataGridColumns(
+      tr: context.tr,
       isProcessLogsExpanded: isProcessLogsExpanded,
       onToggleProcessLogs: toggleProcessLogs,
       onStartProcess: runProcessAction(
         processStore.start,
-        errorMessage: 'Не удалось запустить процесс.',
+        errorMessage: context.tr.processes.errors.startFailed,
       ),
       onStopProcess: runProcessAction(
         processStore.stop,
-        errorMessage: 'Не удалось остановить процесс.',
+        errorMessage: context.tr.processes.errors.stopFailed,
       ),
       onEditProcess: editProcess,
       onDeleteProcess: runProcessAction(
         processStore.delete,
-        errorMessage: 'Не удалось удалить процесс.',
+        errorMessage: context.tr.processes.errors.deleteFailed,
       ),
     ),
     rowWrapper: createProcessesDataGridRowWrapper(isProcessLogsExpanded),

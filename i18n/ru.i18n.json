@@ -1,0 +1,72 @@
+{
+  "app": {
+    "navigation": {
+      "processes": "Процессы",
+      "settings": "Настройки"
+    }
+  },
+  "common": {
+    "add": "Добавить",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "exit": "Выход"
+  },
+  "processes": {
+    "title": "Процессы",
+    "dialog": {
+      "addTitle": "Добавить процесс",
+      "editTitle": "Редактировать процесс"
+    },
+    "form": {
+      "nameLabel": "Название",
+      "nameRequired": "Укажи название процесса",
+      "launchTypeLabel": "Тип запуска",
+      "executableLabel": "Исполняемый файл",
+      "executableRequired": "Укажи исполняемый файл",
+      "argumentsLabel": "Аргументы запуска"
+    },
+    "table": {
+      "name": "Название",
+      "status": "Статус",
+      "launchType": "Тип запуска",
+      "actions": "Действия",
+      "logsEmpty": "Логи пока пусты"
+    },
+    "status": {
+      "running": "Работает",
+      "starting": "Запускается",
+      "stopped": "Остановлен",
+      "failed": "Ошибка"
+    },
+    "launchType": {
+      "auto": "Авто",
+      "manual": "Ручной"
+    },
+    "errors": {
+      "addFailed": "Не удалось добавить процесс.",
+      "notFound": "Не удалось найти процесс.",
+      "saveFailed": "Не удалось сохранить процесс.",
+      "startFailed": "Не удалось запустить процесс.",
+      "stopFailed": "Не удалось остановить процесс.",
+      "deleteFailed": "Не удалось удалить процесс."
+    }
+  },
+  "settings": {
+    "title": "Настройки",
+    "errors": {
+      "saveFailed": "Не удалось сохранить настройки."
+    },
+    "theme": {
+      "title": "Тема приложения",
+      "description": "Выбери режим отображения для всего приложения.",
+      "system": "Система",
+      "light": "Светлая",
+      "dark": "Тёмная"
+    },
+    "language": {
+      "title": "Язык",
+      "description": "Выбери язык интерфейса приложения.",
+      "system": "Система"
+    }
+  }
+}

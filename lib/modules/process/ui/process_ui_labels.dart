@@ -1,17 +1,18 @@
+import '/i18n/strings.g.dart';
 import '../domain/process.dart';
 
 extension ProcessStatusLabel on ProcessStatus {
   String get label => switch (this) {
-    ProcessStatus.running => 'Работает',
-    ProcessStatus.starting => 'Запускается',
-    ProcessStatus.stopped => 'Остановлен',
-    ProcessStatus.failed => 'Ошибка',
+    ProcessStatus.running => tr.processes.status.running,
+    ProcessStatus.starting => tr.processes.status.starting,
+    ProcessStatus.stopped => tr.processes.status.stopped,
+    ProcessStatus.failed => tr.processes.status.failed,
   };
 }
 
 extension ProcessLaunchTypeLabel on ProcessLaunchType {
   String get label => switch (this) {
-    ProcessLaunchType.auto => 'Авто',
-    ProcessLaunchType.manual => 'Ручной',
+    ProcessLaunchType.auto => tr.processes.launchType.auto,
+    ProcessLaunchType.manual => tr.processes.launchType.manual,
   };
 }

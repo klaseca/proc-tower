@@ -12,10 +12,14 @@ dependencies:
   disco: ^2.0.0
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   jolt: ^3.2.2
   jolt_setup: ^3.2.3
   nanoid2: ^2.0.1
+  slang: ^4.16.0
+  slang_flutter: ^4.16.0
   tray_manager: ^0.5.2
   trina_grid: ^2.2.1
   window_manager: ^0.5.1

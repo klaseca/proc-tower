@@ -1,0 +1,72 @@
+{
+  "app": {
+    "navigation": {
+      "processes": "Processes",
+      "settings": "Settings"
+    }
+  },
+  "common": {
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "exit": "Exit"
+  },
+  "processes": {
+    "title": "Processes",
+    "dialog": {
+      "addTitle": "Add Process",
+      "editTitle": "Edit Process"
+    },
+    "form": {
+      "nameLabel": "Name",
+      "nameRequired": "Enter the process name",
+      "launchTypeLabel": "Launch Type",
+      "executableLabel": "Executable",
+      "executableRequired": "Enter the executable",
+      "argumentsLabel": "Launch Arguments"
+    },
+    "table": {
+      "name": "Name",
+      "status": "Status",
+      "launchType": "Launch Type",
+      "actions": "Actions",
+      "logsEmpty": "No logs yet"
+    },
+    "status": {
+      "running": "Running",
+      "starting": "Starting",
+      "stopped": "Stopped",
+      "failed": "Failed"
+    },
+    "launchType": {
+      "auto": "Auto",
+      "manual": "Manual"
+    },
+    "errors": {
+      "addFailed": "Could not add the process.",
+      "notFound": "Could not find the process.",
+      "saveFailed": "Could not save the process.",
+      "startFailed": "Could not start the process.",
+      "stopFailed": "Could not stop the process.",
+      "deleteFailed": "Could not delete the process."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "errors": {
+      "saveFailed": "Could not save settings."
+    },
+    "theme": {
+      "title": "App Theme",
+      "description": "Choose the appearance mode for the whole app.",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose the app interface language.",
+      "system": "System"
+    }
+  }
+}

@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '/i18n/strings.g.dart';
+
 class AppWindowManager with TrayListener, WindowListener {
   var _isExiting = false;
   var _hasTray = false;
@@ -87,12 +89,12 @@ class AppWindowManager with TrayListener, WindowListener {
     );
 
     if (!Platform.isLinux) {
-      await trayManager.setToolTip('proc-tower');
+      await trayManager.setToolTip('Proc Tower');
     }
 
     await trayManager.setContextMenu(
       Menu(
-        items: [MenuItem(key: _exitAppMenuItemKey, label: 'Выход')],
+        items: [MenuItem(key: _exitAppMenuItemKey, label: tr.common.exit)],
       ),
     );
 

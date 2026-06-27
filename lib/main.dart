@@ -1,8 +1,10 @@
 import 'package:disco/disco.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'i18n/strings.g.dart';
 import 'infra/app_window_manager/app_window_manager.dart';
 import 'infra/app_window_manager/app_window_manager_bootstrap.dart';
 import 'modules/process/process.dart';
@@ -12,9 +14,14 @@ import 'ui/layouts/main_layout.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
+  await LocaleSettings.useDeviceLocale();
 
   try {
     await settingsStore.restore();
+    final preferredLocale = settingsStore.locale.peek;
+    if (preferredLocale != null) {
+      await LocaleSettings.setLocale(preferredLocale);
+    }
   } catch (error) {
     debugPrint('Failed to restore settings: $error');
   }
@@ -24,9 +31,15 @@ Future<void> main() async {
   await appWindowManager.launchToTray();
 
   runApp(
-    ProviderScope(
-      providers: [settingsStoreProvider, processStoreProvider, appWindowManagerProvider(appWindowManager)],
-      child: const App(),
+    TranslationProvider(
+      child: ProviderScope(
+        providers: [
+          settingsStoreProvider,
+          processStoreProvider,
+          appWindowManagerProvider(appWindowManager),
+        ],
+        child: const App(),
+      ),
     ),
   );
 }
@@ -40,7 +53,9 @@ class App extends SetupWidget<App> {
 
     return () => MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Runner',
+      locale: TranslationProvider.of(context).flutterLocale,
+      supportedLocales: AppLocaleUtils.supportedLocales,
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue)),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: .dark),

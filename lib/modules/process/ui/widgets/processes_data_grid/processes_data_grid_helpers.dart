@@ -4,6 +4,7 @@ import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:trina_grid/trina_grid.dart';
 
+import '/i18n/strings.g.dart';
 import '/ui/trina_grid/trina_grid_columns.dart';
 import '../../../domain/process.dart';
 import '../../process_ui_labels.dart';
@@ -17,6 +18,7 @@ typedef ProcessLogsExpandedGetter = bool Function(String);
 typedef ToggleProcessLogs = void Function(String);
 
 List<TrinaColumn> createProcessesDataGridColumns({
+  required Translations tr,
   required ProcessLogsExpandedGetter isProcessLogsExpanded,
   required ToggleProcessLogs onToggleProcessLogs,
   required ProcessAction onStartProcess,
@@ -34,7 +36,7 @@ List<TrinaColumn> createProcessesDataGridColumns({
 
   return ColumnCreator<Process>()
       .add(
-        title: 'Название',
+        title: tr.processes.table.name,
         field: 'name',
         type: .text(),
         renderer: (context, rendererContext) {
@@ -66,7 +68,7 @@ List<TrinaColumn> createProcessesDataGridColumns({
         valueGetter: (process) => process.name,
       )
       .add(
-        title: 'Статус',
+        title: tr.processes.table.status,
         field: 'status',
         type: .custom(),
         renderer: (context, rendererContext) {
@@ -93,14 +95,14 @@ List<TrinaColumn> createProcessesDataGridColumns({
         valueGetter: (process) => process.status,
       )
       .add(
-        title: 'Тип запуска',
+        title: tr.processes.table.launchType,
         field: 'launchType',
         type: .custom(),
         formatter: (value) => value.value.label,
         valueGetter: (process) => process.launchType,
       )
       .add(
-        title: 'Действия',
+        title: tr.processes.table.actions,
         field: 'actions',
         type: .text(),
         enableSorting: false,
@@ -153,6 +155,7 @@ RowWrapper createProcessesDataGridRowWrapper(ProcessLogsExpandedGetter isProcess
       final logsScrollController = useScrollController();
 
       return () {
+        final tr = context.tr;
         final process = rowData.data as Process;
 
         if (!isProcessLogsExpanded(process.id)) {
@@ -161,7 +164,7 @@ RowWrapper createProcessesDataGridRowWrapper(ProcessLogsExpandedGetter isProcess
 
         final colorScheme = Theme.of(context).colorScheme;
         final logs = process.logs.entries.value;
-        final logsText = logs.isEmpty ? 'Логи пока пусты' : logs.join('\n');
+        final logsText = logs.isEmpty ? tr.processes.table.logsEmpty : logs.join('\n');
 
         return Column(
           crossAxisAlignment: .stretch,
