@@ -23,6 +23,7 @@ List<TrinaColumn> createProcessesDataGridColumns({
   required ToggleProcessLogs onToggleProcessLogs,
   required ProcessAction onStartProcess,
   required ProcessAction onStopProcess,
+  required ProcessAction onClearProcessLogs,
   required ProcessAction onEditProcess,
   required ProcessAction onDeleteProcess,
 }) {
@@ -127,6 +128,13 @@ List<TrinaColumn> createProcessesDataGridColumns({
                   onPressed: () => onStopProcess(rendererContext),
                   icon: const Icon(Icons.stop_rounded, size: 18),
                 ),
+              IconButton.filledTonal(
+                style: actionButtonStyle.merge(
+                  _getButtonStyleColors(context, Theme.of(context).colorScheme.secondary),
+                ),
+                onPressed: () => onClearProcessLogs(rendererContext),
+                icon: const Icon(Icons.clear_all_rounded, size: 18),
+              ),
               IconButton.filledTonal(
                 style: actionButtonStyle.merge(
                   _getButtonStyleColors(context, Theme.of(context).colorScheme.tertiary),

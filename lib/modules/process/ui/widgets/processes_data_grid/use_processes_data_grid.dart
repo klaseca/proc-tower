@@ -132,6 +132,9 @@ UseProcessesDataGrid useProcessesDataGrid() {
         processStore.stop,
         errorMessage: context.tr.processes.errors.stopFailed,
       ),
+      onClearProcessLogs: (rendererContext) {
+        rendererContext.data.logs.clear();
+      },
       onEditProcess: editProcess,
       onDeleteProcess: runProcessAction(
         processStore.delete,
