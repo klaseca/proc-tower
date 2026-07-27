@@ -9,13 +9,16 @@
     "add": "Add",
     "save": "Save",
     "cancel": "Cancel",
+    "delete": "Delete",
     "exit": "Exit"
   },
   "processes": {
     "title": "Processes",
     "dialog": {
       "addTitle": "Add Process",
-      "editTitle": "Edit Process"
+      "editTitle": "Edit Process",
+      "deleteTitle": "Delete process?",
+      "deleteConfirmation": "The process \"$processName\" will be deleted. This action cannot be undone."
     },
     "form": {
       "nameLabel": "Name",

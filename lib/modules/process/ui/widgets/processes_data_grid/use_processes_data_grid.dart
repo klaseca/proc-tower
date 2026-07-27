@@ -72,6 +72,45 @@ UseProcessesDataGrid useProcessesDataGrid() {
     }
   }
 
+  Future<void> deleteProcess(ProcessColumnRendererContext rendererContext) async {
+    final process = rendererContext.data;
+    final tr = context.tr;
+    final deleteFailedMessage = tr.processes.errors.deleteFailed;
+    final confirmed =
+        await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: Text(tr.processes.dialog.deleteTitle),
+            content: Text(
+              tr.processes.dialog.deleteConfirmation(processName: process.name.value),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(tr.common.cancel),
+              ),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(dialogContext).colorScheme.error,
+                  foregroundColor: Theme.of(dialogContext).colorScheme.onError,
+                ),
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(tr.common.delete),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!confirmed) return;
+
+    try {
+      await processStore.delete(process.id);
+    } catch (_) {
+      showError(deleteFailedMessage);
+    }
+  }
+
   useEffect(() {
     gridStateManager.value?.setShowLoading(processStore.isLoading);
   });
@@ -136,10 +175,7 @@ UseProcessesDataGrid useProcessesDataGrid() {
         rendererContext.data.logs.clear();
       },
       onEditProcess: editProcess,
-      onDeleteProcess: runProcessAction(
-        processStore.delete,
-        errorMessage: context.tr.processes.errors.deleteFailed,
-      ),
+      onDeleteProcess: deleteProcess,
     ),
     rowWrapper: createProcessesDataGridRowWrapper(isProcessLogsExpanded),
     configuration: (context) =>

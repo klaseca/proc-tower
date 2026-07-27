@@ -65,6 +65,7 @@ class _Translations$common$ru extends Translations$common$en {
 	@override String get add => 'Добавить';
 	@override String get save => 'Сохранить';
 	@override String get cancel => 'Отмена';
+	@override String get delete => 'Удалить';
 	@override String get exit => 'Выход';
 }
 
@@ -117,6 +118,8 @@ class _Translations$processes$dialog$ru extends Translations$processes$dialog$en
 	// Translations
 	@override String get addTitle => 'Добавить процесс';
 	@override String get editTitle => 'Редактировать процесс';
+	@override String get deleteTitle => 'Удалить процесс?';
+	@override String deleteConfirmation({required Object processName}) => 'Процесс "${processName}" будет удалён. Это действие нельзя отменить.';
 }
 
 // Path: processes.form
@@ -236,10 +239,13 @@ extension on TranslationsRu {
 			'common.add' => 'Добавить',
 			'common.save' => 'Сохранить',
 			'common.cancel' => 'Отмена',
+			'common.delete' => 'Удалить',
 			'common.exit' => 'Выход',
 			'processes.title' => 'Процессы',
 			'processes.dialog.addTitle' => 'Добавить процесс',
 			'processes.dialog.editTitle' => 'Редактировать процесс',
+			'processes.dialog.deleteTitle' => 'Удалить процесс?',
+			'processes.dialog.deleteConfirmation' => ({required Object processName}) => 'Процесс "${processName}" будет удалён. Это действие нельзя отменить.',
 			'processes.form.nameLabel' => 'Название',
 			'processes.form.nameRequired' => 'Укажи название процесса',
 			'processes.form.launchTypeLabel' => 'Тип запуска',

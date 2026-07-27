@@ -9,13 +9,16 @@
     "add": "Добавить",
     "save": "Сохранить",
     "cancel": "Отмена",
+    "delete": "Удалить",
     "exit": "Выход"
   },
   "processes": {
     "title": "Процессы",
     "dialog": {
       "addTitle": "Добавить процесс",
-      "editTitle": "Редактировать процесс"
+      "editTitle": "Редактировать процесс",
+      "deleteTitle": "Удалить процесс?",
+      "deleteConfirmation": "Процесс \"$processName\" будет удалён. Это действие нельзя отменить."
     },
     "form": {
       "nameLabel": "Название",

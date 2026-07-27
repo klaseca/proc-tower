@@ -73,6 +73,9 @@ class Translations$common$en {
 	/// en: 'Cancel'
 	String get cancel => 'Cancel';
 
+	/// en: 'Delete'
+	String get delete => 'Delete';
+
 	/// en: 'Exit'
 	String get exit => 'Exit';
 }
@@ -140,6 +143,12 @@ class Translations$processes$dialog$en {
 
 	/// en: 'Edit Process'
 	String get editTitle => 'Edit Process';
+
+	/// en: 'Delete process?'
+	String get deleteTitle => 'Delete process?';
+
+	/// en: 'The process "$processName" will be deleted. This action cannot be undone.'
+	String deleteConfirmation({required Object processName}) => 'The process "${processName}" will be deleted. This action cannot be undone.';
 }
 
 // Path: processes.form
@@ -323,10 +332,13 @@ extension on Translations {
 			'common.add' => 'Add',
 			'common.save' => 'Save',
 			'common.cancel' => 'Cancel',
+			'common.delete' => 'Delete',
 			'common.exit' => 'Exit',
 			'processes.title' => 'Processes',
 			'processes.dialog.addTitle' => 'Add Process',
 			'processes.dialog.editTitle' => 'Edit Process',
+			'processes.dialog.deleteTitle' => 'Delete process?',
+			'processes.dialog.deleteConfirmation' => ({required Object processName}) => 'The process "${processName}" will be deleted. This action cannot be undone.',
 			'processes.form.nameLabel' => 'Name',
 			'processes.form.nameRequired' => 'Enter the process name',
 			'processes.form.launchTypeLabel' => 'Launch Type',
