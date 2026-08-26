@@ -68,7 +68,7 @@ jobs:
         run: |
           executable=build/macos/Build/Products/Release/proc_tower.app/Contents/MacOS/proc_tower
           lipo -info "$executable"
-          lipo -verify_arch arm64 x86_64 "$executable"
+          lipo "$executable" -verify_arch arm64 x86_64
 
       - name: Package Windows build
         if: matrix.target == 'windows'
