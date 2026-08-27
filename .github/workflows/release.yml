@@ -119,6 +119,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           path: release-assets
+          skip-decompress: true
 
       - name: Publish release assets
         env:
@@ -126,8 +127,12 @@ jobs:
           GH_REPO: ${{ github.repository }}
           TAG_NAME: ${{ github.ref_name }}
         run: |
-          shopt -s globstar nullglob
-          assets=(release-assets/**/*)
+          mapfile -d '' assets < <(find release-assets -type f -print0)
+
+          if (( ${#assets[@]} == 0 )); then
+            echo "No release assets found" >&2
+            exit 1
+          fi
 
           if gh release view "$TAG_NAME" >/dev/null 2>&1; then
             gh release upload "$TAG_NAME" "${assets[@]}" --clobber
