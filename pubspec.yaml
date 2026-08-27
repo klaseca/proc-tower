@@ -2,7 +2,7 @@ name: proc_tower
 description: "Desktop app for managing custom background processes"
 publish_to: 'none'
 
-version: 0.0.0
+version: 0.1.0
 
 environment:
   sdk: ^3.11.5
