@@ -1,0 +1,136 @@
+name: Release Desktop Builds
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  APP_NAME: proc-tower
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2025
+            target: windows
+            artifact_suffix: windows-x64
+          - os: ubuntu-22.04
+            target: linux
+            artifact_suffix: linux-x64
+          - os: macos-15
+            target: macos
+            artifact_suffix: macos-universal
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.41.7
+          cache: true
+
+      - name: Read app version
+        id: app_version
+        shell: bash
+        run: |
+          version="$(sed -n 's/^version:[[:space:]]*//p' pubspec.yaml)"
+          echo "version=${version%%+*}" >> "$GITHUB_OUTPUT"
+
+      - name: Install Linux build dependencies
+        if: matrix.target == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang \
+            cmake \
+            ninja-build \
+            pkg-config \
+            libgtk-3-dev \
+            liblzma-dev \
+            libayatana-appindicator3-dev
+
+      - name: Get packages
+        run: flutter pub get
+
+      - name: Build app
+        run: flutter build ${{ matrix.target }} --release
+
+      - name: Verify macOS architectures
+        if: matrix.target == 'macos'
+        run: |
+          executable=build/macos/Build/Products/Release/proc_tower.app/Contents/MacOS/proc_tower
+          lipo -info "$executable"
+          lipo "$executable" -verify_arch arm64 x86_64
+
+      - name: Package Windows build
+        if: matrix.target == 'windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Compress-Archive `
+            -Path build/windows/x64/runner/Release/* `
+            -DestinationPath dist/${{ env.APP_NAME }}-${{ steps.app_version.outputs.version }}-${{ matrix.artifact_suffix }}.zip
+
+      - name: Package Linux build
+        if: matrix.target == 'linux'
+        run: |
+          mkdir -p dist
+          tar -C build/linux/x64/release/bundle \
+            -czf dist/${{ env.APP_NAME }}-${{ steps.app_version.outputs.version }}-${{ matrix.artifact_suffix }}.tar.gz .
+
+      - name: Package macOS build
+        if: matrix.target == 'macos'
+        run: |
+          mkdir -p dist
+          ditto -c -k --sequesterRsrc --keepParent \
+            build/macos/Build/Products/Release/proc_tower.app \
+            dist/${{ env.APP_NAME }}-${{ steps.app_version.outputs.version }}-${{ matrix.artifact_suffix }}.zip
+
+      - name: Upload packaged artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.APP_NAME }}-${{ steps.app_version.outputs.version }}-${{ matrix.artifact_suffix }}
+          path: dist/*
+          if-no-files-found: error
+          archive: false
+
+  publish:
+    name: Publish GitHub Release
+    runs-on: ubuntu-22.04
+    needs: build
+
+    steps:
+      - name: Download packaged artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: release-assets
+
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          shopt -s globstar nullglob
+          assets=(release-assets/**/*)
+
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            gh release upload "$TAG_NAME" "${assets[@]}" --clobber
+          else
+            gh release create "$TAG_NAME" "${assets[@]}" --verify-tag --generate-notes
+          fi
