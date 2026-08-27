@@ -1,10 +1,7 @@
 name: Release Desktop Builds
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - github-release
     tags:
       - "v*"
 
@@ -14,6 +11,9 @@ permissions:
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  APP_NAME: proc-tower
 
 jobs:
   build:
@@ -25,13 +25,13 @@ jobs:
         include:
           - os: windows-2025
             target: windows
-            artifact_name: proc-tower-windows-x64
+            artifact_suffix: windows-x64
           - os: ubuntu-22.04
             target: linux
-            artifact_name: proc-tower-linux-x64
+            artifact_suffix: linux-x64
           - os: macos-15
             target: macos
-            artifact_name: proc-tower-macos-universal
+            artifact_suffix: macos-universal
 
     steps:
       - name: Checkout repository
@@ -43,6 +43,13 @@ jobs:
           channel: stable
           flutter-version: 3.41.7
           cache: true
+
+      - name: Read app version
+        id: app_version
+        shell: bash
+        run: |
+          version="$(sed -n 's/^version:[[:space:]]*//p' pubspec.yaml)"
+          echo "version=${version%%+*}" >> "$GITHUB_OUTPUT"
 
       - name: Install Linux build dependencies
         if: matrix.target == 'linux'
@@ -77,13 +84,14 @@ jobs:
           New-Item -ItemType Directory -Force -Path dist | Out-Null
           Compress-Archive `
             -Path build/windows/x64/runner/Release/* `
-            -DestinationPath dist/${{ matrix.artifact_name }}.zip
+            -DestinationPath dist/${{ env.APP_NAME }}-${{ steps.app_version.outputs.version }}-${{ matrix.artifact_suffix }}.zip
 
       - name: Package Linux build
         if: matrix.target == 'linux'
         run: |
           mkdir -p dist
-          tar -C build/linux/x64/release/bundle -czf dist/${{ matrix.artifact_name }}.tar.gz .
+          tar -C build/linux/x64/release/bundle \
+            -czf dist/${{ env.APP_NAME }}-${{ steps.app_version.outputs.version }}-${{ matrix.artifact_suffix }}.tar.gz .
 
       - name: Package macOS build
         if: matrix.target == 'macos'
@@ -91,19 +99,18 @@ jobs:
           mkdir -p dist
           ditto -c -k --sequesterRsrc --keepParent \
             build/macos/Build/Products/Release/proc_tower.app \
-            dist/${{ matrix.artifact_name }}.zip
+            dist/${{ env.APP_NAME }}-${{ steps.app_version.outputs.version }}-${{ matrix.artifact_suffix }}.zip
 
       - name: Upload packaged artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ matrix.artifact_name }}
+          name: ${{ env.APP_NAME }}-${{ steps.app_version.outputs.version }}-${{ matrix.artifact_suffix }}
           path: dist/*
           if-no-files-found: error
           archive: false
 
   publish:
     name: Publish GitHub Release
-    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-22.04
     needs: build
 
