@@ -1,7 +1,6 @@
 import 'package:disco/disco.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:jolt_setup/jolt_setup.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'i18n/strings.g.dart';

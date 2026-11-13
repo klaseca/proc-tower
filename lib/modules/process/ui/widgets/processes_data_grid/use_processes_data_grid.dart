@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 import '/i18n/strings.g.dart';
@@ -81,9 +81,7 @@ UseProcessesDataGrid useProcessesDataGrid() {
           context: context,
           builder: (dialogContext) => AlertDialog(
             title: Text(tr.processes.dialog.deleteTitle),
-            content: Text(
-              tr.processes.dialog.deleteConfirmation(processName: process.name.value),
-            ),
+            content: Text(tr.processes.dialog.deleteConfirmation(processName: process.name.value)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext, false),

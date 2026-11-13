@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '/i18n/strings.g.dart';
 
@@ -9,10 +9,7 @@ class SettingsData {
   final ThemeMode themeMode;
   final AppLocale? locale;
 
-  const SettingsData({
-    this.themeMode = ThemeMode.system,
-    this.locale,
-  });
+  const SettingsData({this.themeMode = ThemeMode.system, this.locale});
 }
 
 class SettingsDao {

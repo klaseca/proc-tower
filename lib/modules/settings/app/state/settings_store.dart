@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:jolt/jolt.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '/i18n/strings.g.dart';
 import '../../infra/dao/settings_dao.dart';
@@ -22,12 +22,7 @@ class SettingsStore {
       return;
     }
 
-    await _dao.saveSettings(
-      SettingsData(
-        themeMode: nextThemeMode,
-        locale: locale.peek,
-      ),
-    );
+    await _dao.saveSettings(SettingsData(themeMode: nextThemeMode, locale: locale.peek));
     themeMode.value = nextThemeMode;
   }
 
@@ -36,12 +31,7 @@ class SettingsStore {
       return;
     }
 
-    await _dao.saveSettings(
-      SettingsData(
-        themeMode: themeMode.peek,
-        locale: nextLocale,
-      ),
-    );
+    await _dao.saveSettings(SettingsData(themeMode: themeMode.peek, locale: nextLocale));
     locale.value = nextLocale;
   }
 }

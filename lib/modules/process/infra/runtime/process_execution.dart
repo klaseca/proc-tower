@@ -16,7 +16,7 @@ class ProcessExecution {
   Stream<String> get logs => _logController.stream;
   Future<ProcessExitResult> get done => _exitResult.future;
 
-  ProcessExecution._({required Process process}) : _process = process {
+  ProcessExecution._({required this._process}) {
     _stdoutSubscription = _process.stdout
         .transform(utf8.decoder)
         .transform(const LineSplitter())

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
+import 'package:material_ui/material_ui.dart';
 
 @defineHook
 void Function(String) useNotification() {

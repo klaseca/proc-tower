@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:jolt_setup/jolt_setup.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '/i18n/app_locale_label.dart';
 import '/i18n/strings.g.dart';
@@ -150,10 +150,7 @@ class _WrapSettingsRow extends StatelessWidget {
   final columnGap = 16.0;
   final rowGap = 12.0;
 
-  const _WrapSettingsRow({
-    required this.text,
-    required this.action,
-  });
+  const _WrapSettingsRow({required this.text, required this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -161,9 +158,7 @@ class _WrapSettingsRow extends StatelessWidget {
       builder: (context, constraints) {
         final availableWidth = constraints.maxWidth;
         final actionBasisWidth = availableWidth * actionBasisFraction;
-        final actionWidth = actionBasisWidth < actionMinWidth
-            ? actionMinWidth
-            : actionBasisWidth;
+        final actionWidth = actionBasisWidth < actionMinWidth ? actionMinWidth : actionBasisWidth;
         final textWidth = availableWidth - columnGap - actionWidth;
         final shouldWrap = textWidth < textMinWidth;
         final resolvedTextWidth = shouldWrap ? availableWidth : textWidth;
@@ -174,16 +169,10 @@ class _WrapSettingsRow extends StatelessWidget {
           runSpacing: rowGap,
           crossAxisAlignment: .center,
           children: [
-            SizedBox(
-              width: resolvedTextWidth,
-              child: text,
-            ),
+            SizedBox(width: resolvedTextWidth, child: text),
             SizedBox(
               width: resolvedActionWidth,
-              child: SizedBox(
-                width: double.infinity,
-                child: action,
-              ),
+              child: SizedBox(width: double.infinity, child: action),
             ),
           ],
         );
