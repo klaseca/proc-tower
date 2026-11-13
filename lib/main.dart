@@ -1,7 +1,6 @@
 import 'package:disco/disco.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:window_manager/window_manager.dart';
 
 import 'i18n/strings.g.dart';
 import 'infra/app_window_manager/app_window_manager.dart';
@@ -12,7 +11,6 @@ import 'ui/layouts/main_layout.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
   await LocaleSettings.useDeviceLocale();
 
   try {

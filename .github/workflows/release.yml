@@ -62,7 +62,8 @@ jobs:
             pkg-config \
             libgtk-3-dev \
             liblzma-dev \
-            libayatana-appindicator3-dev
+            libx11-dev \
+            libxi-dev
 
       - name: Get packages
         run: flutter pub get

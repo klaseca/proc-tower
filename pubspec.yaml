@@ -15,12 +15,12 @@ dependencies:
   jolt: ^3.2.2
   jolt_setup: ^3.2.3
   material_ui: ^1.11.0
-  nanoid2: ^2.0.1
-  slang: ^4.16.0
-  slang_flutter: ^4.16.0
-  tray_manager: ^0.5.2
+  nanoid2: ^2.1.0
+  slang: ^4.19.2
+  slang_flutter: ^4.19.0
+  tray_manager: ^0.9.0
   trina_grid: ^2.4.0
-  window_manager: ^0.5.1
+  window_manager: ^0.7.0
 
 dev_dependencies:
   flutter_test:

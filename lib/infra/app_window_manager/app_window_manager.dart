@@ -6,111 +6,126 @@ import 'package:window_manager/window_manager.dart';
 
 import '/i18n/strings.g.dart';
 
-class AppWindowManager with TrayListener, WindowListener {
+class AppWindowManager {
+  final Window _window;
+  late final ListenerId _windowListenerId;
+  TrayIcon? _trayIcon;
+  Menu? _trayMenu;
+  MenuItem? _exitMenuItem;
   var _isExiting = false;
-  var _hasTray = false;
   Future<void> Function()? onExit;
 
-  AppWindowManager._();
-
-  @override
-  void onTrayIconMouseDown() async {
-    await _showWindow();
+  AppWindowManager._(this._window) {
+    _windowListenerId = _window.addListener(_onWindowEvent);
+    _window.center();
   }
 
-  @override
-  void onTrayIconRightMouseDown() async {
-    // ignore: deprecated_member_use
-    await trayManager.popUpContextMenu(bringAppToFront: Platform.isWindows);
-  }
+  void _onWindowEvent(WindowEvent event) {
+    if (event is WindowCloseRequestedEvent) {
+      event.request.cancel();
 
-  @override
-  void onTrayMenuItemClick(MenuItem menuItem) async {
-    switch (menuItem.key) {
-      case _exitAppMenuItemKey:
-        await destroy();
+      if (!_isExiting) {
+        _hideWindow();
+      }
     }
-  }
-
-  @override
-  void onWindowClose() async {
-    if (_isExiting) {
-      return;
-    }
-
-    await _hideWindow();
   }
 
   Future<void> destroy() async {
+    if (_isExiting) return;
+
     _isExiting = true;
-    trayManager.removeListener(this);
-    windowManager.removeListener(this);
-    await onExit?.call();
-    await _destroyTray();
-    await windowManager.destroy();
+    try {
+      await onExit?.call();
+    } catch (_) {
+      _isExiting = false;
+      rethrow;
+    }
+    _destroyTray();
+    _window.removeListener(_windowListenerId);
+    _window.close();
   }
 
   Future<void> launchToTray() async {
-    await _createTray();
+    _hideWindow();
   }
 
-  Future<void> _initialize() async {
-    trayManager.addListener(this);
-    windowManager.addListener(this);
-    await windowManager.setPreventClose(true);
-    await windowManager.waitUntilReadyToShow(WindowOptions(center: true));
-  }
+  void _showWindow() {
+    _trayIcon?.setVisible(false);
 
-  Future<void> _showWindow() async {
-    await _destroyTray();
-
-    if (await windowManager.isMinimized()) {
-      await windowManager.restore();
+    if (_window.isMinimized) {
+      _window.restore();
     }
 
-    await windowManager.show();
-    await windowManager.focus();
+    _window
+      ..show()
+      ..focus();
   }
 
-  Future<void> _hideWindow() async {
-    await _createTray();
-    await windowManager.hide();
+  void _hideWindow() {
+    _createTray();
+    _window.hide();
   }
 
-  Future<void> _createTray() async {
-    if (_hasTray) {
-      return;
-    }
-
-    await trayManager.setIcon(
-      Platform.isWindows
+  void _createTray() {
+    if (_trayIcon == null) {
+      final iconPath = Platform.isWindows
           ? 'windows/runner/resources/app_icon.ico'
-          : 'macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_32.png',
-    );
+          : 'macos/Runner/Assets.xcassets/AppIcon.appiconset/app_icon_32.png';
+      final image = ImageAsset.fromAsset(iconPath);
 
-    if (!Platform.isLinux) {
-      await trayManager.setToolTip('Proc Tower');
+      if (image == null) {
+        throw StateError('Could not load the tray icon: $iconPath');
+      }
+
+      final trayIcon = TrayIcon.createWithIdentifier('proc_tower');
+      final menu = Menu.create();
+      final exitItem = MenuItem.createWithLabelAndType(tr.common.exit, MenuItemType.normal);
+
+      if (trayIcon == null || menu == null || exitItem == null) {
+        trayIcon?.dispose();
+        menu?.dispose();
+        exitItem?.dispose();
+        image.dispose();
+        throw StateError('Could not create the system tray.');
+      }
+
+      exitItem.addListener((event) async {
+        if (event is MenuItemClickedEvent) {
+          await destroy();
+        }
+      });
+
+      menu.addItem(exitItem);
+
+      trayIcon
+        ..icon = image
+        ..setTooltip('Proc Tower')
+        ..setContextMenu(menu)
+        ..setContextMenuTrigger(ContextMenuTrigger.rightClicked)
+        ..addListener((event) {
+          if (event is TrayIconClickedEvent && !_isExiting) {
+            _showWindow();
+          }
+        });
+      image.dispose();
+
+      _trayIcon = trayIcon;
+      _trayMenu = menu;
+      _exitMenuItem = exitItem;
     }
 
-    await trayManager.setContextMenu(
-      Menu(
-        items: [MenuItem(key: _exitAppMenuItemKey, label: tr.common.exit)],
-      ),
-    );
-
-    _hasTray = true;
+    _exitMenuItem!.label = tr.common.exit;
+    _trayIcon!.setVisible(true);
   }
 
-  Future<void> _destroyTray() async {
-    if (!_hasTray) {
-      return;
-    }
-
-    await trayManager.destroy();
-    _hasTray = false;
+  void _destroyTray() {
+    _trayIcon?.dispose();
+    _trayMenu?.dispose();
+    _exitMenuItem?.dispose();
+    _trayIcon = null;
+    _trayMenu = null;
+    _exitMenuItem = null;
   }
-
-  static const _exitAppMenuItemKey = 'exit_app';
 
   static Future<AppWindowManager>? _instance;
 
@@ -119,8 +134,12 @@ class AppWindowManager with TrayListener, WindowListener {
   }
 
   static Future<AppWindowManager> _create() async {
-    final controller = AppWindowManager._();
-    await controller._initialize();
-    return controller;
+    final window = WindowManager.instance.getCurrent();
+
+    if (window == null) {
+      throw StateError('Could not find the application window.');
+    }
+
+    return AppWindowManager._(window);
   }
 }
