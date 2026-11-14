@@ -177,6 +177,54 @@ class Translations$processes$form$en {
 
 	/// en: 'Launch Arguments'
 	String get argumentsLabel => 'Launch Arguments';
+
+	/// en: 'Environment variables'
+	String get environmentTitle => 'Environment variables';
+
+	/// en: 'These variables are passed to the process and can be used in arguments.'
+	String get environmentDescription => 'These variables are passed to the process and can be used in arguments.';
+
+	/// en: 'Name'
+	String get environmentNameLabel => 'Name';
+
+	/// en: 'Value'
+	String get environmentValueLabel => 'Value';
+
+	/// en: 'Add variable'
+	String get environmentAdd => 'Add variable';
+
+	/// en: 'Remove variable'
+	String get environmentRemove => 'Remove variable';
+
+	/// en: 'Enter the variable name.'
+	String get environmentNameRequired => 'Enter the variable name.';
+
+	/// en: 'Invalid variable name: $name.'
+	String environmentInvalidName({required Object name}) => 'Invalid variable name: ${name}.';
+
+	/// en: 'Variable $name is defined more than once.'
+	String environmentDuplicate({required Object name}) => 'Variable ${name} is defined more than once.';
+
+	/// en: 'The value of $name contains an invalid character.'
+	String environmentInvalidValue({required Object name}) => 'The value of ${name} contains an invalid character.';
+
+	/// en: '{NAME} inserts a variable; {{NAME}} keeps the literal text.'
+	String get argumentsHint => '{NAME} inserts a variable; {{NAME}} keeps the literal text.';
+
+	/// en: 'Arguments after expansion'
+	String get argumentsPreview => 'Arguments after expansion';
+
+	/// en: 'No arguments'
+	String get argumentsEmpty => 'No arguments';
+
+	/// en: 'Variable $name was not found.'
+	String argumentsUnknownVariable({required Object name}) => 'Variable ${name} was not found.';
+
+	/// en: 'Close the quotation marks in the arguments.'
+	String get argumentsUnclosedQuote => 'Close the quotation marks in the arguments.';
+
+	/// en: 'Arguments contain an invalid character.'
+	String get argumentsInvalid => 'Arguments contain an invalid character.';
 }
 
 // Path: processes.table
@@ -346,6 +394,22 @@ extension on Translations {
 			'processes.form.executableLabel' => 'Executable',
 			'processes.form.executableRequired' => 'Enter the executable',
 			'processes.form.argumentsLabel' => 'Launch Arguments',
+			'processes.form.environmentTitle' => 'Environment variables',
+			'processes.form.environmentDescription' => 'These variables are passed to the process and can be used in arguments.',
+			'processes.form.environmentNameLabel' => 'Name',
+			'processes.form.environmentValueLabel' => 'Value',
+			'processes.form.environmentAdd' => 'Add variable',
+			'processes.form.environmentRemove' => 'Remove variable',
+			'processes.form.environmentNameRequired' => 'Enter the variable name.',
+			'processes.form.environmentInvalidName' => ({required Object name}) => 'Invalid variable name: ${name}.',
+			'processes.form.environmentDuplicate' => ({required Object name}) => 'Variable ${name} is defined more than once.',
+			'processes.form.environmentInvalidValue' => ({required Object name}) => 'The value of ${name} contains an invalid character.',
+			'processes.form.argumentsHint' => '{NAME} inserts a variable; {{NAME}} keeps the literal text.',
+			'processes.form.argumentsPreview' => 'Arguments after expansion',
+			'processes.form.argumentsEmpty' => 'No arguments',
+			'processes.form.argumentsUnknownVariable' => ({required Object name}) => 'Variable ${name} was not found.',
+			'processes.form.argumentsUnclosedQuote' => 'Close the quotation marks in the arguments.',
+			'processes.form.argumentsInvalid' => 'Arguments contain an invalid character.',
 			'processes.table.name' => 'Name',
 			'processes.table.status' => 'Status',
 			'processes.table.launchType' => 'Launch Type',

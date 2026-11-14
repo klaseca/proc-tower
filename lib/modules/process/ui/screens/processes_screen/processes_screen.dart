@@ -34,6 +34,7 @@ class ProcessesScreen extends SetupWidget<ProcessesScreen> {
           launchType: process.launchType,
           executable: process.executable,
           arguments: process.arguments,
+          environment: process.environment,
         );
       } catch (_) {
         showError(addFailedMessage);

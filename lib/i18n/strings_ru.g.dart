@@ -135,6 +135,22 @@ class _Translations$processes$form$ru extends Translations$processes$form$en {
 	@override String get executableLabel => 'Исполняемый файл';
 	@override String get executableRequired => 'Укажи исполняемый файл';
 	@override String get argumentsLabel => 'Аргументы запуска';
+	@override String get environmentTitle => 'Переменные окружения';
+	@override String get environmentDescription => 'Эти переменные передаются процессу и доступны в аргументах.';
+	@override String get environmentNameLabel => 'Имя';
+	@override String get environmentValueLabel => 'Значение';
+	@override String get environmentAdd => 'Добавить переменную';
+	@override String get environmentRemove => 'Удалить переменную';
+	@override String get environmentNameRequired => 'Укажи имя переменной.';
+	@override String environmentInvalidName({required Object name}) => 'Некорректное имя переменной: ${name}.';
+	@override String environmentDuplicate({required Object name}) => 'Переменная ${name} указана дважды.';
+	@override String environmentInvalidValue({required Object name}) => 'Значение ${name} содержит недопустимый символ.';
+	@override String get argumentsHint => '{NAME} — значение переменной, {{NAME}} — буквальный текст.';
+	@override String get argumentsPreview => 'Аргументы после подстановки';
+	@override String get argumentsEmpty => 'Аргументы не заданы';
+	@override String argumentsUnknownVariable({required Object name}) => 'Переменная ${name} не найдена.';
+	@override String get argumentsUnclosedQuote => 'Закрой кавычки в аргументах.';
+	@override String get argumentsInvalid => 'Аргументы содержат недопустимый символ.';
 }
 
 // Path: processes.table
@@ -252,6 +268,22 @@ extension on TranslationsRu {
 			'processes.form.executableLabel' => 'Исполняемый файл',
 			'processes.form.executableRequired' => 'Укажи исполняемый файл',
 			'processes.form.argumentsLabel' => 'Аргументы запуска',
+			'processes.form.environmentTitle' => 'Переменные окружения',
+			'processes.form.environmentDescription' => 'Эти переменные передаются процессу и доступны в аргументах.',
+			'processes.form.environmentNameLabel' => 'Имя',
+			'processes.form.environmentValueLabel' => 'Значение',
+			'processes.form.environmentAdd' => 'Добавить переменную',
+			'processes.form.environmentRemove' => 'Удалить переменную',
+			'processes.form.environmentNameRequired' => 'Укажи имя переменной.',
+			'processes.form.environmentInvalidName' => ({required Object name}) => 'Некорректное имя переменной: ${name}.',
+			'processes.form.environmentDuplicate' => ({required Object name}) => 'Переменная ${name} указана дважды.',
+			'processes.form.environmentInvalidValue' => ({required Object name}) => 'Значение ${name} содержит недопустимый символ.',
+			'processes.form.argumentsHint' => '{NAME} — значение переменной, {{NAME}} — буквальный текст.',
+			'processes.form.argumentsPreview' => 'Аргументы после подстановки',
+			'processes.form.argumentsEmpty' => 'Аргументы не заданы',
+			'processes.form.argumentsUnknownVariable' => ({required Object name}) => 'Переменная ${name} не найдена.',
+			'processes.form.argumentsUnclosedQuote' => 'Закрой кавычки в аргументах.',
+			'processes.form.argumentsInvalid' => 'Аргументы содержат недопустимый символ.',
 			'processes.table.name' => 'Название',
 			'processes.table.status' => 'Статус',
 			'processes.table.launchType' => 'Тип запуска',

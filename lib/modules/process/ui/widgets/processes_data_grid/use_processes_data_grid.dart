@@ -53,6 +53,7 @@ UseProcessesDataGrid useProcessesDataGrid() {
           launchType: existing.launchType.value,
           executable: existing.executable.value,
           arguments: existing.arguments.value,
+          environment: existing.environment.value,
         ),
       ),
     );
@@ -66,6 +67,7 @@ UseProcessesDataGrid useProcessesDataGrid() {
         launchType: updatedProcess.launchType,
         executable: updatedProcess.executable,
         arguments: updatedProcess.arguments,
+        environment: updatedProcess.environment,
       );
     } catch (_) {
       showError(saveFailedMessage);

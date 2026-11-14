@@ -9,6 +9,7 @@ class Process {
   final Signal<ProcessLaunchType> launchType;
   final Signal<String> executable;
   final Signal<String> arguments;
+  final MapSignal<String, String> environment;
   final Signal<ProcessStatus> status;
   final ProcessLogs logs;
 
@@ -18,12 +19,14 @@ class Process {
     ProcessLaunchType launchType = ProcessLaunchType.manual,
     required String executable,
     String arguments = '',
+    Map<String, String> environment = const {},
     ProcessStatus status = ProcessStatus.stopped,
   }) : id = id ?? nanoid(),
        name = Signal(name),
        launchType = Signal(launchType),
        executable = Signal(executable),
        arguments = Signal(arguments),
+       environment = MapSignal(Map.of(environment)),
        status = Signal(status),
        logs = ProcessLogs();
 

@@ -35,12 +35,14 @@ class ProcessStore {
     required ProcessLaunchType launchType,
     required String executable,
     required String arguments,
+    Map<String, String> environment = const {},
   }) async {
     final process = Process(
       name: name.trim(),
       launchType: launchType,
       executable: executable.trim(),
       arguments: arguments.trim(),
+      environment: environment,
     );
 
     await _repo.saveProcess(process);
@@ -53,6 +55,7 @@ class ProcessStore {
     required ProcessLaunchType launchType,
     required String executable,
     required String arguments,
+    Map<String, String> environment = const {},
   }) async {
     final currentProcess = _getOrThrow(processId);
 
@@ -62,6 +65,7 @@ class ProcessStore {
       launchType: launchType,
       executable: executable.trim(),
       arguments: arguments.trim(),
+      environment: environment,
     );
 
     await _repo.saveProcess(nextProcess);
@@ -70,6 +74,7 @@ class ProcessStore {
       process.launchType.value = nextProcess.launchType.peek;
       process.executable.value = nextProcess.executable.peek;
       process.arguments.value = nextProcess.arguments.peek;
+      process.environment.value = Map.of(nextProcess.environment.peek);
     });
   }
 
@@ -130,6 +135,7 @@ class ProcessStore {
         process.launchType.value = storedProcess.launchType.peek;
         process.executable.value = storedProcess.executable.peek;
         process.arguments.value = storedProcess.arguments.peek;
+        process.environment.value = Map.of(storedProcess.environment.peek);
       });
       nextProcesses.add(currentProcess);
     }

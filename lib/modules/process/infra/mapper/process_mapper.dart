@@ -9,6 +9,7 @@ abstract final class ProcessMapper {
       launchType: _parseLaunchType(record.launchType),
       executable: record.executable,
       arguments: record.arguments,
+      environment: record.environment,
     );
   }
 
@@ -19,6 +20,7 @@ abstract final class ProcessMapper {
       launchType: process.launchType.peek.name,
       executable: process.executable.peek,
       arguments: process.arguments.peek,
+      environment: Map.of(process.environment.peek),
     );
   }
 

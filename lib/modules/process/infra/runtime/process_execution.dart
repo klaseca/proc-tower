@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'launch_command.dart';
+
 class ProcessExecution {
   final Process _process;
   final _logController = StreamController<String>();
@@ -42,7 +44,7 @@ class ProcessExecution {
     final process = await Process.start(
       launchCommand.executable,
       launchCommand.arguments,
-      runInShell: false,
+      environment: launchCommand.environment,
     );
 
     return ProcessExecution._(process: process);
@@ -111,72 +113,4 @@ class ProcessExitResult {
   final bool stopRequested;
 
   const ProcessExitResult({required this.exitCode, required this.stopRequested});
-}
-
-class LaunchCommand {
-  final String executable;
-  final List<String> arguments;
-
-  const LaunchCommand({required this.executable, required this.arguments});
-}
-
-LaunchCommand buildLaunchCommand({required String executable, required String arguments}) {
-  final normalizedExecutable = executable.trim();
-
-  if (normalizedExecutable.isEmpty) {
-    throw StateError('Executable is empty.');
-  }
-
-  return LaunchCommand(executable: normalizedExecutable, arguments: _parseArguments(arguments));
-}
-
-List<String> _parseArguments(String input) {
-  final result = <String>[];
-  final buffer = StringBuffer();
-
-  String? quote;
-  var tokenStarted = false;
-
-  for (var i = 0; i < input.length; i += 1) {
-    final char = input[i];
-
-    if (quote != null) {
-      if (char == quote) {
-        quote = null;
-      } else {
-        buffer.write(char);
-      }
-
-      tokenStarted = true;
-      continue;
-    }
-
-    if (char == '"' || char == "'") {
-      quote = char;
-      tokenStarted = true;
-      continue;
-    }
-
-    if (char.trim().isEmpty) {
-      if (tokenStarted) {
-        result.add(buffer.toString());
-        buffer.clear();
-        tokenStarted = false;
-      }
-      continue;
-    }
-
-    buffer.write(char);
-    tokenStarted = true;
-  }
-
-  if (quote != null) {
-    throw FormatException('Unclosed quote: $quote');
-  }
-
-  if (tokenStarted) {
-    result.add(buffer.toString());
-  }
-
-  return result;
 }

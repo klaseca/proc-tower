@@ -7,6 +7,7 @@ class ProcessDaoRecord {
   final String launchType;
   final String executable;
   final String arguments;
+  final Map<String, String> environment;
 
   const ProcessDaoRecord({
     required this.id,
@@ -14,6 +15,7 @@ class ProcessDaoRecord {
     required this.launchType,
     required this.executable,
     required this.arguments,
+    this.environment = const {},
   });
 
   factory ProcessDaoRecord.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class ProcessDaoRecord {
       launchType: json['launchType'] as String,
       executable: json['executable'] as String,
       arguments: json['arguments'] as String? ?? '',
+      environment: Map<String, String>.from(json['environment'] ?? const {}),
     );
   }
 
@@ -33,6 +36,7 @@ class ProcessDaoRecord {
       'launchType': launchType,
       'executable': executable,
       'arguments': arguments,
+      'environment': environment,
     };
   }
 }
@@ -83,9 +87,8 @@ class ProcessDao {
   Future<void> _writeJson(List<ProcessDaoRecord> records) async {
     await _file.parent.create(recursive: true);
 
-    final contents = const JsonEncoder.withIndent(
-      '  ',
-    ).convert({'processes': records.map((record) => record.toJson()).toList(growable: false)});
+    final contents = const JsonEncoder.withIndent('  ')
+        .convert({'processes': records.map((record) => record.toJson()).toList(growable: false)});
 
     await _file.writeAsString(contents);
   }

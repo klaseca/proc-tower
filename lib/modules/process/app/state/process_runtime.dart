@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:io' show ProcessException;
 
+import '/i18n/strings.g.dart';
 import '../../domain/process.dart';
+import '../../infra/runtime/launch_command.dart';
 import '../../infra/runtime/process_execution.dart';
+import '../launch_command_error_message.dart';
 
 class ProcessRuntime {
   final Process _process;
@@ -28,6 +32,7 @@ class ProcessRuntime {
         launchCommand: buildLaunchCommand(
           executable: _process.executable.peek,
           arguments: _process.arguments.peek,
+          environment: _process.environment.peek,
         ),
       );
 
@@ -35,10 +40,7 @@ class ProcessRuntime {
       _logsSubscription = runningHandle.logs.listen(_process.appendLog);
       unawaited(
         runningHandle.done.then(
-          (exitResult) => _handleExit(
-            handle: runningHandle,
-            exitResult: exitResult,
-          ),
+          (exitResult) => _handleExit(handle: runningHandle, exitResult: exitResult),
         ),
       );
 
@@ -47,7 +49,12 @@ class ProcessRuntime {
       _process.setStatus(ProcessStatus.running);
     } catch (error) {
       await _disposeRunningHandle();
-      _process.appendLog('START FAILED: $error');
+      final message = switch (error) {
+        LaunchCommandException() => launchCommandErrorMessage(error, tr),
+        ProcessException() => '${error.message} (code ${error.errorCode})',
+        _ => error.runtimeType.toString(),
+      };
+      _process.appendLog('START FAILED: $message');
       _process.setStatus(ProcessStatus.failed);
       rethrow;
     }
