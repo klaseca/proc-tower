@@ -2,31 +2,31 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:tray_manager/tray_manager.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:window_manager/window_manager.dart'
+    show WindowListener, WindowOptions, windowManager;
 
 import '/i18n/strings.g.dart';
 
-class AppWindowManager {
-  final Window _window;
-  late final ListenerId _windowListenerId;
+class AppWindowManager with WindowListener {
   TrayIcon? _trayIcon;
   Menu? _trayMenu;
   MenuItem? _exitMenuItem;
   var _isExiting = false;
   Future<void> Function()? onExit;
 
-  AppWindowManager._(this._window) {
-    _windowListenerId = _window.addListener(_onWindowEvent);
-    _window.center();
+  AppWindowManager._();
+
+  Future<void> _initialize() async {
+    await windowManager.ensureInitialized();
+    windowManager.addListener(this);
+    await windowManager.setPreventClose(true);
+    await windowManager.waitUntilReadyToShow(const WindowOptions(center: true));
   }
 
-  void _onWindowEvent(WindowEvent event) {
-    if (event is WindowCloseRequestedEvent) {
-      event.request.cancel();
-
-      if (!_isExiting) {
-        _hideWindow();
-      }
+  @override
+  void onWindowClose() async {
+    if (!_isExiting) {
+      await _hideWindow();
     }
   }
 
@@ -41,29 +41,28 @@ class AppWindowManager {
       rethrow;
     }
     _destroyTray();
-    _window.removeListener(_windowListenerId);
-    _window.close();
+    windowManager.removeListener(this);
+    await windowManager.destroy();
   }
 
   Future<void> launchToTray() async {
-    _hideWindow();
+    await _hideWindow();
   }
 
-  void _showWindow() {
+  Future<void> _showWindow() async {
     _trayIcon?.setVisible(false);
 
-    if (_window.isMinimized) {
-      _window.restore();
+    if (await windowManager.isMinimized()) {
+      await windowManager.restore();
     }
 
-    _window
-      ..show()
-      ..focus();
+    await windowManager.show();
+    await windowManager.focus();
   }
 
-  void _hideWindow() {
+  Future<void> _hideWindow() async {
     _createTray();
-    _window.hide();
+    await windowManager.hide();
   }
 
   void _createTray() {
@@ -102,9 +101,9 @@ class AppWindowManager {
         ..setTooltip('Proc Tower')
         ..setContextMenu(menu)
         ..setContextMenuTrigger(ContextMenuTrigger.rightClicked)
-        ..addListener((event) {
+        ..addListener((event) async {
           if (event is TrayIconClickedEvent && !_isExiting) {
-            _showWindow();
+            await _showWindow();
           }
         });
       image.dispose();
@@ -134,12 +133,8 @@ class AppWindowManager {
   }
 
   static Future<AppWindowManager> _create() async {
-    final window = WindowManager.instance.getCurrent();
-
-    if (window == null) {
-      throw StateError('Could not find the application window.');
-    }
-
-    return AppWindowManager._(window);
+    final controller = AppWindowManager._();
+    await controller._initialize();
+    return controller;
   }
 }
