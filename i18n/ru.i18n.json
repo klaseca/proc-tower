@@ -38,8 +38,6 @@
       "environmentDuplicate": "Переменная $name указана дважды.",
       "environmentInvalidValue": "Значение $name содержит недопустимый символ.",
       "argumentsHint": "{NAME} — значение переменной, {{NAME}} — буквальный текст.",
-      "argumentsPreview": "Аргументы после подстановки",
-      "argumentsEmpty": "Аргументы не заданы",
       "argumentsUnknownVariable": "Переменная $name не найдена.",
       "argumentsUnclosedQuote": "Закрой кавычки в аргументах.",
       "argumentsInvalid": "Аргументы содержат недопустимый символ."
@@ -86,6 +84,23 @@
       "title": "Язык",
       "description": "Выбери язык интерфейса приложения.",
       "system": "Система"
+    },
+    "dataDirectory": {
+      "title": "Папка данных",
+      "description": "В этой папке хранятся процессы и настройки.",
+      "sourceStandard": "Системная папка приложения",
+      "sourcePortable": "portable.flag",
+      "sourceEnvironment": "PROC_TOWER_DATA_DIR",
+      "environmentHint": "Чтобы использовать другую папку, задай PROC_TOWER_DATA_DIR перед запуском приложения.",
+      "portableHint": "В портативном режиме используется app_data рядом с программой. Сохраняй её при переносе и обновлении приложения."
     }
+  },
+  "storageStartup": {
+    "title": "Не удалось открыть данные приложения",
+    "invalidDirectory": "Укажи непустой абсолютный путь к папке данных.",
+    "unavailableDirectory": "Папка данных должна существовать и быть доступна для чтения и записи. Проверь путь или подключи диск.",
+    "unavailableSystemDirectory": "Не удалось определить системную папку приложения. Задай PROC_TOWER_DATA_DIR.",
+    "unknown": "Не удалось открыть хранилище приложения.",
+    "hint": "Исправь настройки хранения и перезапусти приложение."
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:material_ui/material_ui.dart';
@@ -53,20 +51,16 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
         (key: UniqueKey(), name: entry.key, value: entry.value),
     ]);
     final launchType = useSignal(props().initialInput?.launchType ?? .manual);
-    final launchPreview = useComputed<_LaunchPreview>(() {
+    final launchValidation = useComputed<_LaunchValidation>(() {
       try {
         final launchArguments = parseLaunchArguments(
           argumentsText.value,
           environment: environmentEntries.map((entry) => MapEntry(entry.name, entry.value)),
         );
 
-        return (
-          environment: launchArguments.environment,
-          text: _formatArguments(launchArguments.arguments),
-          error: null,
-        );
+        return (environment: launchArguments.environment, error: null);
       } on LaunchCommandException catch (error) {
-        return (environment: const {}, text: '', error: error);
+        return (environment: const {}, error: error);
       }
     });
 
@@ -82,8 +76,8 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
         minimumSize: const Size(120, 40),
         textStyle: buttonTextStyle,
       );
-      final preview = launchPreview.value;
-      final launchError = preview.error;
+      final validation = launchValidation.value;
+      final launchError = validation.error;
 
       final nameField = TextFormField(
         controller: nameController,
@@ -162,6 +156,10 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
                     decoration: InputDecoration(
                       labelText: tr.processes.form.argumentsLabel,
                       alignLabelWithHint: true,
+                      errorText: launchError == null
+                          ? null
+                          : launchCommandErrorMessage(launchError, tr),
+                      errorMaxLines: 3,
                     ),
                   ),
                   PositionedDirectional(
@@ -180,36 +178,6 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
                     ),
                   ),
                 ],
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHigh,
-                  borderRadius: .circular(12),
-                ),
-                child: Padding(
-                  padding: const .all(12),
-                  child: Column(
-                    mainAxisSize: .min,
-                    crossAxisAlignment: .stretch,
-                    spacing: 8,
-                    children: [
-                      Text(tr.processes.form.argumentsPreview, style: theme.textTheme.labelLarge),
-                      if (launchError != null)
-                        Semantics(
-                          liveRegion: true,
-                          child: Text(
-                            launchCommandErrorMessage(launchError, tr),
-                            style: TextStyle(color: theme.colorScheme.error),
-                          ),
-                        )
-                      else
-                        SelectableText(
-                          preview.text.isEmpty ? tr.processes.form.argumentsEmpty : preview.text,
-                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
-                        ),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),
@@ -238,7 +206,7 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
                           launchType: launchType.value,
                           executable: executableController.text.trim(),
                           arguments: argumentsController.text.trim(),
-                          environment: preview.environment,
+                          environment: validation.environment,
                         ),
                       );
                     },
@@ -251,18 +219,4 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
   }
 }
 
-typedef _LaunchPreview = ({
-  Map<String, String> environment,
-  String text,
-  LaunchCommandException? error,
-});
-
-String _formatArguments(List<String> arguments) {
-  final needsQuoting = RegExp(r'''[\s"']''');
-  return arguments
-      .map(
-        (argument) =>
-            argument.isEmpty || needsQuoting.hasMatch(argument) ? jsonEncode(argument) : argument,
-      )
-      .join(' ');
-}
+typedef _LaunchValidation = ({Map<String, String> environment, LaunchCommandException? error});

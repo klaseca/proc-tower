@@ -38,8 +38,6 @@
       "environmentDuplicate": "Variable $name is defined more than once.",
       "environmentInvalidValue": "The value of $name contains an invalid character.",
       "argumentsHint": "{NAME} inserts a variable; {{NAME}} keeps the literal text.",
-      "argumentsPreview": "Arguments after expansion",
-      "argumentsEmpty": "No arguments",
       "argumentsUnknownVariable": "Variable $name was not found.",
       "argumentsUnclosedQuote": "Close the quotation marks in the arguments.",
       "argumentsInvalid": "Arguments contain an invalid character."
@@ -86,6 +84,23 @@
       "title": "Language",
       "description": "Choose the app interface language.",
       "system": "System"
+    },
+    "dataDirectory": {
+      "title": "Data folder",
+      "description": "Processes and settings are stored in this folder.",
+      "sourceStandard": "System application folder",
+      "sourcePortable": "portable.flag",
+      "sourceEnvironment": "PROC_TOWER_DATA_DIR",
+      "environmentHint": "To use another folder, set PROC_TOWER_DATA_DIR before launching the application.",
+      "portableHint": "Portable mode uses app_data beside the application. Keep it when moving or updating the application."
     }
+  },
+  "storageStartup": {
+    "title": "Could not open application data",
+    "invalidDirectory": "Specify a non-empty absolute path for the data folder.",
+    "unavailableDirectory": "The data folder must exist and be readable and writable. Check the path or connect the drive.",
+    "unavailableSystemDirectory": "The system application folder could not be determined. Set PROC_TOWER_DATA_DIR.",
+    "unknown": "Could not initialize application storage.",
+    "hint": "Fix the storage configuration and restart the application."
   }
 }

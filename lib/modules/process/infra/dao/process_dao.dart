@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import '/infra/app_data_storage/app_data_storage.dart';
+
 class ProcessDaoRecord {
   final String id;
   final String name;
@@ -42,14 +44,20 @@ class ProcessDaoRecord {
 }
 
 class ProcessDao {
-  final _file = _initFile();
+  final AppDataStorage _storage;
 
-  Future<List<ProcessDaoRecord>> getProcesses() async {
-    if (!await _file.exists()) {
+  ProcessDao(this._storage);
+
+  Future<List<ProcessDaoRecord>> getProcesses() {
+    return _storage.withFile(AppDataStorage.processesFileName, _readRecords);
+  }
+
+  Future<List<ProcessDaoRecord>> _readRecords(File file) async {
+    if (!await file.exists()) {
       return [];
     }
 
-    final contents = await _file.readAsString();
+    final contents = await file.readAsString();
 
     if (contents.trim().isEmpty) {
       return [];
@@ -62,40 +70,36 @@ class ProcessDao {
     return rawProcesses.map((rawProcess) => ProcessDaoRecord.fromJson(rawProcess)).toList();
   }
 
-  Future<void> deleteProcess(String processId) async {
-    final records = await getProcesses();
-
-    records.removeWhere((process) => process.id == processId);
-
-    await _writeJson(records);
+  Future<void> deleteProcess(String processId) {
+    return _storage.withFile(AppDataStorage.processesFileName, (file) async {
+      final records = await _readRecords(file);
+      records.removeWhere((process) => process.id == processId);
+      await _writeJson(file, records);
+    });
   }
 
-  Future<void> saveProcess(ProcessDaoRecord process) async {
-    final records = await getProcesses();
+  Future<void> saveProcess(ProcessDaoRecord process) {
+    return _storage.withFile(AppDataStorage.processesFileName, (file) async {
+      final records = await _readRecords(file);
 
-    final index = records.indexWhere((item) => item.id == process.id);
+      final index = records.indexWhere((item) => item.id == process.id);
 
-    if (index == -1) {
-      records.add(process);
-    } else {
-      records[index] = process;
-    }
+      if (index == -1) {
+        records.add(process);
+      } else {
+        records[index] = process;
+      }
 
-    await _writeJson(records);
+      await _writeJson(file, records);
+    });
   }
 
-  Future<void> _writeJson(List<ProcessDaoRecord> records) async {
-    await _file.parent.create(recursive: true);
+  Future<void> _writeJson(File file, List<ProcessDaoRecord> records) async {
+    await file.parent.create(recursive: true);
 
     final contents = const JsonEncoder.withIndent('  ')
         .convert({'processes': records.map((record) => record.toJson()).toList(growable: false)});
 
-    await _file.writeAsString(contents);
-  }
-
-  static File _initFile() {
-    final directory = File(Platform.resolvedExecutable).parent;
-    final filePath = '${directory.path}${Platform.pathSeparator}processes.json';
-    return File(filePath);
+    await file.writeAsString(contents);
   }
 }

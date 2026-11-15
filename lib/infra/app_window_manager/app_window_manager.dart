@@ -49,7 +49,7 @@ class AppWindowManager with WindowListener {
     await _hideWindow();
   }
 
-  Future<void> _showWindow() async {
+  Future<void> show() async {
     _trayIcon?.setVisible(false);
 
     if (await windowManager.isMinimized()) {
@@ -103,7 +103,7 @@ class AppWindowManager with WindowListener {
         ..setContextMenuTrigger(ContextMenuTrigger.rightClicked)
         ..addListener((event) async {
           if (event is TrayIconClickedEvent && !_isExiting) {
-            await _showWindow();
+            await show();
           }
         });
       image.dispose();

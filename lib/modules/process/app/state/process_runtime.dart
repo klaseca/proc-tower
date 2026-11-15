@@ -9,13 +9,20 @@ import '../launch_command_error_message.dart';
 
 class ProcessRuntime {
   final Process _process;
+  Future<void>? _startFuture;
   Future<void>? _closeFuture;
   ProcessExecution? _runningHandle;
   StreamSubscription<String>? _logsSubscription;
 
   ProcessRuntime(this._process);
 
-  Future<void> start() async {
+  Future<void> start() {
+    if (_closeFuture != null) return Future.value();
+
+    return _startFuture ??= _start().whenComplete(() => _startFuture = null);
+  }
+
+  Future<void> _start() async {
     if (_runningHandle != null || _process.status.peek == ProcessStatus.starting) {
       return;
     }
@@ -89,6 +96,12 @@ class ProcessRuntime {
   }
 
   Future<void> _closeInternal({required Duration timeout}) async {
+    try {
+      await _startFuture;
+    } catch (_) {
+      // The start call reports its failure; cleanup must still finish.
+    }
+
     final runningHandle = _runningHandle;
 
     if (runningHandle != null) {

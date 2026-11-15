@@ -3,15 +3,35 @@ import 'package:jolt_setup/jolt_setup.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'i18n/strings.g.dart';
+import 'infra/app_data_storage/app_data_storage.dart';
+import 'infra/app_data_storage/app_data_storage_bootstrap.dart';
 import 'infra/app_window_manager/app_window_manager.dart';
 import 'infra/app_window_manager/app_window_manager_bootstrap.dart';
 import 'modules/process/process.dart';
 import 'modules/settings/settings.dart';
 import 'ui/layouts/main_layout.dart';
+import 'ui/screens/app_data_startup_error_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocaleSettings.useDeviceLocale();
+  final appWindowManager = await AppWindowManager.instance;
+  final AppDataStorage appDataStorage;
+
+  try {
+    appDataStorage = await createAppDataStorage();
+  } catch (error) {
+    runApp(
+      TranslationProvider(
+        child: AppDataStartupErrorApp(error: error, onExit: appWindowManager.destroy),
+      ),
+    );
+    await appWindowManager.show();
+    return;
+  }
+
+  final settingsStore = createSettingsStore(appDataStorage);
+  final processStore = createProcessStore(appDataStorage);
 
   try {
     await settingsStore.restore();
@@ -23,7 +43,6 @@ Future<void> main() async {
     debugPrint('Failed to restore settings: $error');
   }
 
-  final appWindowManager = await AppWindowManager.instance;
   appWindowManager.onExit = () => processStore.dispose();
   await appWindowManager.launchToTray();
 
@@ -31,8 +50,8 @@ Future<void> main() async {
     TranslationProvider(
       child: ProviderScope(
         providers: [
-          settingsStoreProvider,
-          processStoreProvider,
+          settingsStoreProvider(settingsStore),
+          processStoreProvider(processStore),
           appWindowManagerProvider(appWindowManager),
         ],
         child: const App(),

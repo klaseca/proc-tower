@@ -43,6 +43,7 @@ class TranslationsRu extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$common$ru common = _Translations$common$ru._(_root);
 	@override late final _Translations$processes$ru processes = _Translations$processes$ru._(_root);
 	@override late final _Translations$settings$ru settings = _Translations$settings$ru._(_root);
+	@override late final _Translations$storageStartup$ru storageStartup = _Translations$storageStartup$ru._(_root);
 }
 
 // Path: app
@@ -96,6 +97,22 @@ class _Translations$settings$ru extends Translations$settings$en {
 	@override late final _Translations$settings$errors$ru errors = _Translations$settings$errors$ru._(_root);
 	@override late final _Translations$settings$theme$ru theme = _Translations$settings$theme$ru._(_root);
 	@override late final _Translations$settings$language$ru language = _Translations$settings$language$ru._(_root);
+	@override late final _Translations$settings$dataDirectory$ru dataDirectory = _Translations$settings$dataDirectory$ru._(_root);
+}
+
+// Path: storageStartup
+class _Translations$storageStartup$ru extends Translations$storageStartup$en {
+	_Translations$storageStartup$ru._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Не удалось открыть данные приложения';
+	@override String get invalidDirectory => 'Укажи непустой абсолютный путь к папке данных.';
+	@override String get unavailableDirectory => 'Папка данных должна существовать и быть доступна для чтения и записи. Проверь путь или подключи диск.';
+	@override String get unavailableSystemDirectory => 'Не удалось определить системную папку приложения. Задай PROC_TOWER_DATA_DIR.';
+	@override String get unknown => 'Не удалось открыть хранилище приложения.';
+	@override String get hint => 'Исправь настройки хранения и перезапусти приложение.';
 }
 
 // Path: app.navigation
@@ -146,8 +163,6 @@ class _Translations$processes$form$ru extends Translations$processes$form$en {
 	@override String environmentDuplicate({required Object name}) => 'Переменная ${name} указана дважды.';
 	@override String environmentInvalidValue({required Object name}) => 'Значение ${name} содержит недопустимый символ.';
 	@override String get argumentsHint => '{NAME} — значение переменной, {{NAME}} — буквальный текст.';
-	@override String get argumentsPreview => 'Аргументы после подстановки';
-	@override String get argumentsEmpty => 'Аргументы не заданы';
 	@override String argumentsUnknownVariable({required Object name}) => 'Переменная ${name} не найдена.';
 	@override String get argumentsUnclosedQuote => 'Закрой кавычки в аргументах.';
 	@override String get argumentsInvalid => 'Аргументы содержат недопустимый символ.';
@@ -242,6 +257,22 @@ class _Translations$settings$language$ru extends Translations$settings$language$
 	@override String get system => 'Система';
 }
 
+// Path: settings.dataDirectory
+class _Translations$settings$dataDirectory$ru extends Translations$settings$dataDirectory$en {
+	_Translations$settings$dataDirectory$ru._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Папка данных';
+	@override String get description => 'В этой папке хранятся процессы и настройки.';
+	@override String get sourceStandard => 'Системная папка приложения';
+	@override String get sourcePortable => 'portable.flag';
+	@override String get sourceEnvironment => 'PROC_TOWER_DATA_DIR';
+	@override String get environmentHint => 'Чтобы использовать другую папку, задай PROC_TOWER_DATA_DIR перед запуском приложения.';
+	@override String get portableHint => 'В портативном режиме используется app_data рядом с программой. Сохраняй её при переносе и обновлении приложения.';
+}
+
 /// The flat map containing all translations for locale <ru>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -279,8 +310,6 @@ extension on TranslationsRu {
 			'processes.form.environmentDuplicate' => ({required Object name}) => 'Переменная ${name} указана дважды.',
 			'processes.form.environmentInvalidValue' => ({required Object name}) => 'Значение ${name} содержит недопустимый символ.',
 			'processes.form.argumentsHint' => '{NAME} — значение переменной, {{NAME}} — буквальный текст.',
-			'processes.form.argumentsPreview' => 'Аргументы после подстановки',
-			'processes.form.argumentsEmpty' => 'Аргументы не заданы',
 			'processes.form.argumentsUnknownVariable' => ({required Object name}) => 'Переменная ${name} не найдена.',
 			'processes.form.argumentsUnclosedQuote' => 'Закрой кавычки в аргументах.',
 			'processes.form.argumentsInvalid' => 'Аргументы содержат недопустимый символ.',
@@ -311,6 +340,19 @@ extension on TranslationsRu {
 			'settings.language.title' => 'Язык',
 			'settings.language.description' => 'Выбери язык интерфейса приложения.',
 			'settings.language.system' => 'Система',
+			'settings.dataDirectory.title' => 'Папка данных',
+			'settings.dataDirectory.description' => 'В этой папке хранятся процессы и настройки.',
+			'settings.dataDirectory.sourceStandard' => 'Системная папка приложения',
+			'settings.dataDirectory.sourcePortable' => 'portable.flag',
+			'settings.dataDirectory.sourceEnvironment' => 'PROC_TOWER_DATA_DIR',
+			'settings.dataDirectory.environmentHint' => 'Чтобы использовать другую папку, задай PROC_TOWER_DATA_DIR перед запуском приложения.',
+			'settings.dataDirectory.portableHint' => 'В портативном режиме используется app_data рядом с программой. Сохраняй её при переносе и обновлении приложения.',
+			'storageStartup.title' => 'Не удалось открыть данные приложения',
+			'storageStartup.invalidDirectory' => 'Укажи непустой абсолютный путь к папке данных.',
+			'storageStartup.unavailableDirectory' => 'Папка данных должна существовать и быть доступна для чтения и записи. Проверь путь или подключи диск.',
+			'storageStartup.unavailableSystemDirectory' => 'Не удалось определить системную папку приложения. Задай PROC_TOWER_DATA_DIR.',
+			'storageStartup.unknown' => 'Не удалось открыть хранилище приложения.',
+			'storageStartup.hint' => 'Исправь настройки хранения и перезапусти приложение.',
 			_ => null,
 		};
 	}

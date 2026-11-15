@@ -49,88 +49,126 @@ class SettingsScreen extends SetupWidget<SettingsScreen> {
       ];
       final textTheme = Theme.of(context).textTheme;
       final colorScheme = Theme.of(context).colorScheme;
+      final storageLabels = tr.settings.dataDirectory;
+      final storageSource = switch (settingsStore.dataDirectorySource) {
+        .standard => storageLabels.sourceStandard,
+        .portable => storageLabels.sourcePortable,
+        .environment => storageLabels.sourceEnvironment,
+      };
+      final storageHint = switch (settingsStore.dataDirectorySource) {
+        .portable => storageLabels.portableHint,
+        _ => storageLabels.environmentHint,
+      };
 
       return Scaffold(
         appBar: AppBar(title: Text(tr.settings.title)),
-        body: Padding(
-          padding: const .all(16),
-          child: SizedBox(
-            width: .infinity,
-            child: Card(
-              margin: .zero,
-              child: Padding(
-                padding: const .all(16),
-                child: Column(
-                  crossAxisAlignment: .stretch,
-                  mainAxisSize: .min,
-                  spacing: 24.0,
-                  children: [
-                    _WrapSettingsRow(
-                      text: Column(
-                        crossAxisAlignment: .start,
-                        mainAxisSize: .min,
-                        spacing: 8,
-                        children: [
-                          Text(tr.settings.theme.title, style: textTheme.headlineSmall),
-                          Text(
-                            tr.settings.theme.description,
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const .all(16),
+            child: SizedBox(
+              width: .infinity,
+              child: Card(
+                margin: .zero,
+                child: Padding(
+                  padding: const .all(16),
+                  child: Column(
+                    crossAxisAlignment: .stretch,
+                    mainAxisSize: .min,
+                    spacing: 24.0,
+                    children: [
+                      _WrapSettingsRow(
+                        text: Column(
+                          crossAxisAlignment: .start,
+                          mainAxisSize: .min,
+                          spacing: 8,
+                          children: [
+                            Text(tr.settings.theme.title, style: textTheme.headlineSmall),
+                            Text(
+                              tr.settings.theme.description,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      action: SegmentedButton(
-                        expandedInsets: EdgeInsets.zero,
-                        selected: {settingsStore.themeMode.value},
-                        onSelectionChanged: changeThemeMode,
-                        segments: [
-                          ButtonSegment(
-                            value: ThemeMode.system,
-                            icon: const Icon(Icons.brightness_auto_outlined),
-                            label: Text(tr.settings.theme.system),
-                          ),
-                          ButtonSegment(
-                            value: ThemeMode.light,
-                            icon: const Icon(Icons.light_mode_outlined),
-                            label: Text(tr.settings.theme.light),
-                          ),
-                          ButtonSegment(
-                            value: ThemeMode.dark,
-                            icon: const Icon(Icons.dark_mode_outlined),
-                            label: Text(tr.settings.theme.dark),
-                          ),
-                        ],
-                        showSelectedIcon: false,
-                      ),
-                    ),
-                    _WrapSettingsRow(
-                      text: Column(
-                        crossAxisAlignment: .start,
-                        mainAxisSize: .min,
-                        spacing: 8,
-                        children: [
-                          Text(tr.settings.language.title, style: textTheme.headlineSmall),
-                          Text(
-                            tr.settings.language.description,
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
+                          ],
+                        ),
+                        action: SegmentedButton(
+                          expandedInsets: EdgeInsets.zero,
+                          selected: {settingsStore.themeMode.value},
+                          onSelectionChanged: changeThemeMode,
+                          segments: [
+                            ButtonSegment(
+                              value: ThemeMode.system,
+                              icon: const Icon(Icons.brightness_auto_outlined),
+                              label: Text(tr.settings.theme.system),
                             ),
-                          ),
-                        ],
+                            ButtonSegment(
+                              value: ThemeMode.light,
+                              icon: const Icon(Icons.light_mode_outlined),
+                              label: Text(tr.settings.theme.light),
+                            ),
+                            ButtonSegment(
+                              value: ThemeMode.dark,
+                              icon: const Icon(Icons.dark_mode_outlined),
+                              label: Text(tr.settings.theme.dark),
+                            ),
+                          ],
+                          showSelectedIcon: false,
+                        ),
                       ),
-                      action: DropdownMenuFormField<AppLocale?>(
-                        key: ValueKey(settingsStore.locale.value),
-                        initialSelection: settingsStore.locale.value,
-                        expandedInsets: .zero,
-                        requestFocusOnTap: false,
-                        label: Text(tr.settings.language.title),
-                        inputDecorationTheme: const InputDecorationTheme(),
-                        dropdownMenuEntries: localeEntries,
-                        onSelected: changeLocale,
+                      _WrapSettingsRow(
+                        text: Column(
+                          crossAxisAlignment: .start,
+                          mainAxisSize: .min,
+                          spacing: 8,
+                          children: [
+                            Text(tr.settings.language.title, style: textTheme.headlineSmall),
+                            Text(
+                              tr.settings.language.description,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                        action: DropdownMenuFormField<AppLocale?>(
+                          key: ValueKey(settingsStore.locale.value),
+                          initialSelection: settingsStore.locale.value,
+                          expandedInsets: .zero,
+                          requestFocusOnTap: false,
+                          label: Text(tr.settings.language.title),
+                          inputDecorationTheme: const InputDecorationTheme(),
+                          dropdownMenuEntries: localeEntries,
+                          onSelected: changeLocale,
+                        ),
                       ),
-                    ),
-                  ],
+                      _WrapSettingsRow(
+                        text: Column(
+                          crossAxisAlignment: .start,
+                          mainAxisSize: .min,
+                          spacing: 8,
+                          children: [
+                            Text(tr.settings.dataDirectory.title, style: textTheme.headlineSmall),
+                            Text(
+                              tr.settings.dataDirectory.description,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                        action: Column(
+                          crossAxisAlignment: .start,
+                          mainAxisSize: .min,
+                          spacing: 12,
+                          children: [
+                            SelectableText(settingsStore.dataDirectory),
+                            Text(storageSource),
+                            Text(storageHint),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

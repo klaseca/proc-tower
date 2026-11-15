@@ -45,6 +45,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$common$en common = Translations$common$en.internal(_root);
 	late final Translations$processes$en processes = Translations$processes$en.internal(_root);
 	late final Translations$settings$en settings = Translations$settings$en.internal(_root);
+	late final Translations$storageStartup$en storageStartup = Translations$storageStartup$en.internal(_root);
 }
 
 // Path: app
@@ -114,6 +115,34 @@ class Translations$settings$en {
 	late final Translations$settings$errors$en errors = Translations$settings$errors$en.internal(_root);
 	late final Translations$settings$theme$en theme = Translations$settings$theme$en.internal(_root);
 	late final Translations$settings$language$en language = Translations$settings$language$en.internal(_root);
+	late final Translations$settings$dataDirectory$en dataDirectory = Translations$settings$dataDirectory$en.internal(_root);
+}
+
+// Path: storageStartup
+class Translations$storageStartup$en {
+	Translations$storageStartup$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Could not open application data'
+	String get title => 'Could not open application data';
+
+	/// en: 'Specify a non-empty absolute path for the data folder.'
+	String get invalidDirectory => 'Specify a non-empty absolute path for the data folder.';
+
+	/// en: 'The data folder must exist and be readable and writable. Check the path or connect the drive.'
+	String get unavailableDirectory => 'The data folder must exist and be readable and writable. Check the path or connect the drive.';
+
+	/// en: 'The system application folder could not be determined. Set PROC_TOWER_DATA_DIR.'
+	String get unavailableSystemDirectory => 'The system application folder could not be determined. Set PROC_TOWER_DATA_DIR.';
+
+	/// en: 'Could not initialize application storage.'
+	String get unknown => 'Could not initialize application storage.';
+
+	/// en: 'Fix the storage configuration and restart the application.'
+	String get hint => 'Fix the storage configuration and restart the application.';
 }
 
 // Path: app.navigation
@@ -210,12 +239,6 @@ class Translations$processes$form$en {
 
 	/// en: '{NAME} inserts a variable; {{NAME}} keeps the literal text.'
 	String get argumentsHint => '{NAME} inserts a variable; {{NAME}} keeps the literal text.';
-
-	/// en: 'Arguments after expansion'
-	String get argumentsPreview => 'Arguments after expansion';
-
-	/// en: 'No arguments'
-	String get argumentsEmpty => 'No arguments';
 
 	/// en: 'Variable $name was not found.'
 	String argumentsUnknownVariable({required Object name}) => 'Variable ${name} was not found.';
@@ -368,6 +391,36 @@ class Translations$settings$language$en {
 	String get system => 'System';
 }
 
+// Path: settings.dataDirectory
+class Translations$settings$dataDirectory$en {
+	Translations$settings$dataDirectory$en.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Data folder'
+	String get title => 'Data folder';
+
+	/// en: 'Processes and settings are stored in this folder.'
+	String get description => 'Processes and settings are stored in this folder.';
+
+	/// en: 'System application folder'
+	String get sourceStandard => 'System application folder';
+
+	/// en: 'portable.flag'
+	String get sourcePortable => 'portable.flag';
+
+	/// en: 'PROC_TOWER_DATA_DIR'
+	String get sourceEnvironment => 'PROC_TOWER_DATA_DIR';
+
+	/// en: 'To use another folder, set PROC_TOWER_DATA_DIR before launching the application.'
+	String get environmentHint => 'To use another folder, set PROC_TOWER_DATA_DIR before launching the application.';
+
+	/// en: 'Portable mode uses app_data beside the application. Keep it when moving or updating the application.'
+	String get portableHint => 'Portable mode uses app_data beside the application. Keep it when moving or updating the application.';
+}
+
 /// The flat map containing all translations for locale <en>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -405,8 +458,6 @@ extension on Translations {
 			'processes.form.environmentDuplicate' => ({required Object name}) => 'Variable ${name} is defined more than once.',
 			'processes.form.environmentInvalidValue' => ({required Object name}) => 'The value of ${name} contains an invalid character.',
 			'processes.form.argumentsHint' => '{NAME} inserts a variable; {{NAME}} keeps the literal text.',
-			'processes.form.argumentsPreview' => 'Arguments after expansion',
-			'processes.form.argumentsEmpty' => 'No arguments',
 			'processes.form.argumentsUnknownVariable' => ({required Object name}) => 'Variable ${name} was not found.',
 			'processes.form.argumentsUnclosedQuote' => 'Close the quotation marks in the arguments.',
 			'processes.form.argumentsInvalid' => 'Arguments contain an invalid character.',
@@ -437,6 +488,19 @@ extension on Translations {
 			'settings.language.title' => 'Language',
 			'settings.language.description' => 'Choose the app interface language.',
 			'settings.language.system' => 'System',
+			'settings.dataDirectory.title' => 'Data folder',
+			'settings.dataDirectory.description' => 'Processes and settings are stored in this folder.',
+			'settings.dataDirectory.sourceStandard' => 'System application folder',
+			'settings.dataDirectory.sourcePortable' => 'portable.flag',
+			'settings.dataDirectory.sourceEnvironment' => 'PROC_TOWER_DATA_DIR',
+			'settings.dataDirectory.environmentHint' => 'To use another folder, set PROC_TOWER_DATA_DIR before launching the application.',
+			'settings.dataDirectory.portableHint' => 'Portable mode uses app_data beside the application. Keep it when moving or updating the application.',
+			'storageStartup.title' => 'Could not open application data',
+			'storageStartup.invalidDirectory' => 'Specify a non-empty absolute path for the data folder.',
+			'storageStartup.unavailableDirectory' => 'The data folder must exist and be readable and writable. Check the path or connect the drive.',
+			'storageStartup.unavailableSystemDirectory' => 'The system application folder could not be determined. Set PROC_TOWER_DATA_DIR.',
+			'storageStartup.unknown' => 'Could not initialize application storage.',
+			'storageStartup.hint' => 'Fix the storage configuration and restart the application.',
 			_ => null,
 		};
 	}

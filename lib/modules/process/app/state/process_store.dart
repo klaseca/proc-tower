@@ -11,10 +11,11 @@ class ProcessStore {
   final _executions = <String, ProcessRuntime>{};
   final _processes = ListSignal<Process>([]);
   late final _storedData = AsyncSignal.fromFuture(_restore());
+  Future<void>? _disposeFuture;
 
   List<Process> get processes => _processes.value;
 
-  bool get isLoading => _storedData.value.isLoading;
+  bool get isLoading => _disposeFuture == null && _storedData.value.isLoading;
 
   ProcessStore(this._repo);
 
@@ -85,6 +86,8 @@ class ProcessStore {
   }
 
   Future<void> start(String processId) async {
+    if (_disposeFuture != null) return;
+
     final process = _getOrThrow(processId);
     await _executions.putIfAbsent(process.id, () => ProcessRuntime(process)).start();
   }
@@ -104,18 +107,20 @@ class ProcessStore {
     await execution.stop(timeout: _stopTimeout);
   }
 
-  Future<void> dispose() async {
-    final processIds = _executions.keys.toList(growable: false);
+  Future<void> dispose() {
+    return _disposeFuture ??= _closeExecutions();
+  }
 
-    for (final processId in processIds) {
-      await _closeAndRemoveExecutionIfPresent(processId);
-    }
-
-    _storedData.dispose();
+  Future<void> _closeExecutions() async {
+    final executions = _executions.values.toList(growable: false);
+    _executions.clear();
+    await Future.wait(executions.map((execution) => execution.close(timeout: _stopTimeout)));
   }
 
   Future<void> _restore() async {
     final storedProcesses = await _repo.getProcesses();
+    if (_disposeFuture != null) return;
+
     final currentProcessesById = {for (final process in _processes.peek) process.id: process};
     final nextProcesses = <Process>[];
     final nextProcessIds = <String>{};
@@ -170,6 +175,8 @@ class ProcessStore {
 
   Future<void> _startAutoProcesses(Iterable<Process> processes) async {
     for (final process in processes) {
+      if (_disposeFuture != null) return;
+
       if (process.launchType.peek != ProcessLaunchType.auto) {
         continue;
       }
