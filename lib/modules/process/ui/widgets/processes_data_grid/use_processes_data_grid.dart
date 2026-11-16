@@ -7,6 +7,7 @@ import 'package:trina_grid/trina_grid.dart';
 
 import '/i18n/strings.g.dart';
 import '/ui/hooks/use_notification.dart';
+import '../../../domain/process.dart';
 import '../../../process_bootstrap.dart';
 import '../../widgets/process_modification_dialog.dart';
 import 'processes_data_grid_helpers.dart';
@@ -115,11 +116,7 @@ UseProcessesDataGrid useProcessesDataGrid() {
     gridStateManager.value?.setShowLoading(processStore.isLoading);
   });
 
-  useEffect(() {
-    final stateManager = gridStateManager.value;
-
-    if (stateManager == null) return;
-
+  void syncRows(TrinaGridStateManager stateManager) {
     final availableProcessIds = processStore.processes.map((process) => process.id).toSet();
     expandedProcessIds.retainAll(availableProcessIds);
 
@@ -132,6 +129,30 @@ UseProcessesDataGrid useProcessesDataGrid() {
     stateManager
       ..removeAllRows(notify: false)
       ..appendRows(rows);
+  }
+
+  Future<void> moveRows(TrinaGridOnRowsMovedEvent event) async {
+    final saveFailedMessage = context.tr.processes.errors.reorderFailed;
+
+    try {
+      await processStore.move(
+        event.rows.map((row) => (row.data as Process).id).toList(growable: false),
+        event.idx,
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+
+      final stateManager = gridStateManager.peek;
+      if (stateManager != null) syncRows(stateManager);
+      showError(saveFailedMessage);
+    }
+  }
+
+  useEffect(() {
+    final stateManager = gridStateManager.value;
+    if (stateManager == null) return;
+
+    syncRows(stateManager);
   });
 
   useWatcher(
@@ -159,6 +180,7 @@ UseProcessesDataGrid useProcessesDataGrid() {
         ..setConfiguration(createProcessesDataGridConfiguration(context, true))
         ..notifyListeners();
     },
+    onRowsMoved: moveRows,
     columns: createProcessesDataGridColumns(
       tr: context.tr,
       isProcessLogsExpanded: isProcessLogsExpanded,
@@ -185,6 +207,7 @@ UseProcessesDataGrid useProcessesDataGrid() {
 
 typedef UseProcessesDataGrid = ({
   TrinaOnLoadedEventCallback onLoaded,
+  TrinaOnRowsMovedEventCallback onRowsMoved,
   List<TrinaColumn> columns,
   RowWrapper rowWrapper,
   TrinaGridConfiguration Function(BuildContext) configuration,

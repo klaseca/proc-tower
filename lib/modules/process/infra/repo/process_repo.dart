@@ -20,4 +20,8 @@ class ProcessRepo {
   Future<void> saveProcess(Process process) {
     return _dao.saveProcess(ProcessMapper.toDao(process));
   }
+
+  Future<List<String>> moveProcesses(List<String> processIds, int index) {
+    return _dao.moveProcesses(processIds, index);
+  }
 }

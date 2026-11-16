@@ -94,6 +94,18 @@ class ProcessDao {
     });
   }
 
+  Future<List<String>> moveProcesses(List<String> processIds, int index) {
+    return _storage.withFile(AppDataStorage.processesFileName, (file) async {
+      final records = await _readRecords(file);
+      final recordsById = {for (final record in records) record.id: record};
+      final moved = [for (final id in processIds) ?recordsById.remove(id)];
+      final reordered = recordsById.values.toList();
+      reordered.insertAll(index.clamp(0, reordered.length), moved);
+      await _writeJson(file, reordered);
+      return reordered.map((record) => record.id).toList(growable: false);
+    });
+  }
+
   Future<void> _writeJson(File file, List<ProcessDaoRecord> records) async {
     await file.parent.create(recursive: true);
 

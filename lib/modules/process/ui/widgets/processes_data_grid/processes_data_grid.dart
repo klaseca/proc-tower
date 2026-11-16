@@ -17,6 +17,7 @@ class ProcessesDataGrid extends SetupWidget<ProcessesDataGrid> {
       child: TrinaGrid(
         mode: .readOnly,
         onLoaded: processesDataGrid.onLoaded,
+        onRowsMoved: processesDataGrid.onRowsMoved,
         columns: processesDataGrid.columns,
         rowWrapper: processesDataGrid.rowWrapper,
         rows: [],

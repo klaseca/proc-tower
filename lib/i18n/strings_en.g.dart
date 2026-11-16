@@ -327,6 +327,9 @@ class Translations$processes$errors$en {
 	/// en: 'Could not save the process.'
 	String get saveFailed => 'Could not save the process.';
 
+	/// en: 'Could not save the process order.'
+	String get reorderFailed => 'Could not save the process order.';
+
 	/// en: 'Could not start the process.'
 	String get startFailed => 'Could not start the process.';
 
@@ -475,6 +478,7 @@ extension on Translations {
 			'processes.errors.addFailed' => 'Could not add the process.',
 			'processes.errors.notFound' => 'Could not find the process.',
 			'processes.errors.saveFailed' => 'Could not save the process.',
+			'processes.errors.reorderFailed' => 'Could not save the process order.',
 			'processes.errors.startFailed' => 'Could not start the process.',
 			'processes.errors.stopFailed' => 'Could not stop the process.',
 			'processes.errors.deleteFailed' => 'Could not delete the process.',

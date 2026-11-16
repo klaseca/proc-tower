@@ -63,6 +63,7 @@
       "addFailed": "Could not add the process.",
       "notFound": "Could not find the process.",
       "saveFailed": "Could not save the process.",
+      "reorderFailed": "Could not save the process order.",
       "startFailed": "Could not start the process.",
       "stopFailed": "Could not stop the process.",
       "deleteFailed": "Could not delete the process."

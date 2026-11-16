@@ -216,6 +216,7 @@ class _Translations$processes$errors$ru extends Translations$processes$errors$en
 	@override String get addFailed => 'Не удалось добавить процесс.';
 	@override String get notFound => 'Не удалось найти процесс.';
 	@override String get saveFailed => 'Не удалось сохранить процесс.';
+	@override String get reorderFailed => 'Не удалось сохранить порядок процессов.';
 	@override String get startFailed => 'Не удалось запустить процесс.';
 	@override String get stopFailed => 'Не удалось остановить процесс.';
 	@override String get deleteFailed => 'Не удалось удалить процесс.';
@@ -327,6 +328,7 @@ extension on TranslationsRu {
 			'processes.errors.addFailed' => 'Не удалось добавить процесс.',
 			'processes.errors.notFound' => 'Не удалось найти процесс.',
 			'processes.errors.saveFailed' => 'Не удалось сохранить процесс.',
+			'processes.errors.reorderFailed' => 'Не удалось сохранить порядок процессов.',
 			'processes.errors.startFailed' => 'Не удалось запустить процесс.',
 			'processes.errors.stopFailed' => 'Не удалось остановить процесс.',
 			'processes.errors.deleteFailed' => 'Не удалось удалить процесс.',

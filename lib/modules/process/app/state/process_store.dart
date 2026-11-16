@@ -85,6 +85,13 @@ class ProcessStore {
     _processes.removeWhere((process) => process.id == processId);
   }
 
+  Future<void> move(List<String> processIds, int index) async {
+    final order = await _repo.moveProcesses(processIds, index);
+
+    final processesById = {for (final process in _processes.peek) process.id: process};
+    _processes.value = [for (final id in order) ?processesById.remove(id), ...processesById.values];
+  }
+
   Future<void> start(String processId) async {
     if (_disposeFuture != null) return;
 

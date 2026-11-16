@@ -16,6 +16,7 @@ class ColumnCreator<T> {
     required String field,
     required TrinaColumnType type,
     bool enableSorting = true,
+    bool enableRowDrag = false,
     bool suppressedAutoSize = false,
     Renderer<T, U>? renderer,
     Formatter<U>? formatter,
@@ -30,6 +31,7 @@ class ColumnCreator<T> {
         enableColumnDrag: false,
         enableContextMenu: false,
         enableSorting: enableSorting,
+        enableRowDrag: enableRowDrag,
         suppressedAutoSize: suppressedAutoSize,
         renderer: renderer != null || formatter != null
             ? (rendererContext) => SetupBuilder(

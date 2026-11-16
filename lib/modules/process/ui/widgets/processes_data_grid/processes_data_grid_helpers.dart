@@ -40,6 +40,7 @@ List<TrinaColumn> createProcessesDataGridColumns({
         title: tr.processes.table.name,
         field: 'name',
         type: .text(),
+        enableRowDrag: true,
         renderer: (context, rendererContext) {
           final process = rendererContext.data;
           final isExpanded = isProcessLogsExpanded(process.id);
@@ -254,6 +255,7 @@ List<TrinaRow> createProcessesDataGridRows(List<Process> processes, List<TrinaCo
   return processes
       .map(
         (process) => TrinaRow(
+          key: ValueKey(process.id),
           cells: {
             for (final column in columns)
               column.field: TrinaCell(value: column.metadata?['valueGetter']?.call(process)),
