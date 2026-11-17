@@ -424,6 +424,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.0"
+  mix:
+    dependency: "direct main"
+    description:
+      name: mix
+      sha256: "2a3b4398dfb6164ebc9dad3745503113c796ae1a68292f812076daa6432c1eff"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
+  mix_annotations:
+    dependency: transitive
+    description:
+      name: mix_annotations
+      sha256: "13e574f43b98d38b6a94733b6222f2a5a26b0e00a8854dacb27fed1b2e9f2721"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   nanoid2:
     dependency: "direct main"
     description:

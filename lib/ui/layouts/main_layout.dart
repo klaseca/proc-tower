@@ -1,6 +1,7 @@
 import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mix/mix.dart';
 
 import '/i18n/strings.g.dart';
 import '/modules/process/process.dart';
@@ -20,17 +21,17 @@ class MainLayout extends SetupWidget<MainLayout> {
         NavigationRailDestination(
           icon: const Icon(Icons.home_outlined),
           selectedIcon: const Icon(Icons.home),
-          label: Text(tr.app.navigation.processes),
+          label: StyledText(tr.app.navigation.processes),
         ),
         NavigationRailDestination(
           icon: const Icon(Icons.settings_outlined),
           selectedIcon: const Icon(Icons.settings),
-          label: Text(tr.app.navigation.settings),
+          label: StyledText(tr.app.navigation.settings),
         ),
       ];
 
       return Scaffold(
-        body: Row(
+        body: RowBox(
           children: [
             NavigationRail(
               selectedIndex: selectedIndex.value,

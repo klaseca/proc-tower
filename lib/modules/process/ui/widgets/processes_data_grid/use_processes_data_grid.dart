@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mix/mix.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 import '/i18n/strings.g.dart';
@@ -83,12 +84,14 @@ UseProcessesDataGrid useProcessesDataGrid() {
         await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
-            title: Text(tr.processes.dialog.deleteTitle),
-            content: Text(tr.processes.dialog.deleteConfirmation(processName: process.name.value)),
+            title: StyledText(tr.processes.dialog.deleteTitle),
+            content: StyledText(
+              tr.processes.dialog.deleteConfirmation(processName: process.name.value),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text(tr.common.cancel),
+                child: StyledText(tr.common.cancel),
               ),
               FilledButton(
                 style: FilledButton.styleFrom(
@@ -96,7 +99,7 @@ UseProcessesDataGrid useProcessesDataGrid() {
                   foregroundColor: Theme.of(dialogContext).colorScheme.onError,
                 ),
                 onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(tr.common.delete),
+                child: StyledText(tr.common.delete),
               ),
             ],
           ),

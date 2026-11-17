@@ -1,8 +1,10 @@
 import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mix/mix.dart';
 
 import '/i18n/strings.g.dart';
+import '/ui/theme/app_styles.dart';
 import '../../app/launch_command_error_message.dart';
 import '../../domain/process.dart';
 import '../../infra/runtime/launch_command.dart';
@@ -27,6 +29,10 @@ class ProcessForm {
 
 class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
   static const _maxWidth = 1200.0;
+  static final _headerStyle = AppStyles.row
+      .crossAxisAlignment(.start)
+      .spacing(AppTokens.largeSpace());
+  static final _actionStyle = BoxStyler().width(120);
 
   final String dialogTitle;
   final String submitLabel;
@@ -91,7 +97,7 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
         initialSelection: launchType.value,
         expandedInsets: .zero,
         requestFocusOnTap: false,
-        label: Text(tr.processes.form.launchTypeLabel),
+        label: StyledText(tr.processes.form.launchTypeLabel),
         inputDecorationTheme: const InputDecorationTheme(),
         dropdownMenuEntries: ProcessLaunchType.values
             .map((type) => DropdownMenuEntry(value: type, label: type.label))
@@ -104,27 +110,20 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
       return AlertDialog(
         constraints: const .tightFor(width: _maxWidth),
         scrollable: true,
-        title: Text(props().dialogTitle),
+        title: StyledText(props().dialogTitle),
         content: Form(
           key: formKey,
-          child: Column(
-            mainAxisSize: .min,
-            crossAxisAlignment: .stretch,
-            spacing: 16,
+          child: ColumnBox(
+            style: AppStyles.form,
             children: [
               LayoutBuilder(
                 builder: (context, constraints) {
                   if (constraints.maxWidth < 600) {
-                    return Column(
-                      crossAxisAlignment: .stretch,
-                      spacing: 16,
-                      children: [nameField, launchTypeField],
-                    );
+                    return ColumnBox(style: AppStyles.form, children: [nameField, launchTypeField]);
                   }
 
-                  return Row(
-                    crossAxisAlignment: .start,
-                    spacing: 16,
+                  return RowBox(
+                    style: _headerStyle,
                     children: [
                       Expanded(flex: 3, child: nameField),
                       Expanded(flex: 2, child: launchTypeField),
@@ -144,7 +143,7 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
                 },
               ),
               ProcessEnvironmentEditor(entries: environmentEntries),
-              Stack(
+              StackBox(
                 children: [
                   TextFormField(
                     controller: argumentsController,
@@ -167,13 +166,9 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
                     end: 0,
                     child: Tooltip(
                       message: tr.processes.form.argumentsHint,
-                      child: SizedBox.square(
-                        dimension: 24,
-                        child: Icon(
-                          Icons.help_outline,
-                          size: 18,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
+                      child: Box(
+                        style: AppStyles.helpIconBox,
+                        child: StyledIcon(icon: Icons.help_outline, style: AppStyles.helpIcon),
                       ),
                     ),
                   ),
@@ -183,16 +178,16 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
           ),
         ),
         actions: [
-          SizedBox(
-            width: 120,
+          Box(
+            style: _actionStyle,
             child: TextButton(
               style: cancelButtonStyle,
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(tr.common.cancel),
+              child: StyledText(tr.common.cancel),
             ),
           ),
-          SizedBox(
-            width: 120,
+          Box(
+            style: _actionStyle,
             child: FilledButton(
               style: submitButtonStyle,
               onPressed: launchError != null
@@ -210,7 +205,7 @@ class ProcessModificationDialog extends SetupWidget<ProcessModificationDialog> {
                         ),
                       );
                     },
-              child: Text(props().submitLabel),
+              child: StyledText(props().submitLabel),
             ),
           ),
         ],

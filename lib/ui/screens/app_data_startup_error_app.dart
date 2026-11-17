@@ -1,7 +1,9 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:mix/mix.dart';
 
 import '/i18n/strings.g.dart';
 import '/infra/app_data_storage/app_data_location.dart';
+import '/ui/theme/app_styles.dart';
 
 class AppDataStartupErrorApp extends StatelessWidget {
   final Object error;
@@ -26,25 +28,24 @@ class AppDataStartupErrorApp extends StatelessWidget {
       locale: TranslationProvider.of(context).flutterLocale,
       supportedLocales: AppLocaleUtils.supportedLocales,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      builder: (_, child) => AppStyleScope(child: child!),
       home: Scaffold(
-        appBar: AppBar(title: Text(labels.title)),
-        body: Center(
+        appBar: AppBar(title: StyledText(labels.title)),
+        body: Box(
+          style: BoxStyler().alignment(.center),
           child: SingleChildScrollView(
-            padding: const .all(24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
-              child: Column(
-                mainAxisSize: .min,
-                crossAxisAlignment: .stretch,
-                spacing: 16,
+            child: Box(
+              style: BoxStyler().padding(.all(AppTokens.sectionSpace())).maxWidth(688),
+              child: ColumnBox(
+                style: AppStyles.form,
                 children: [
-                  Text(message),
+                  StyledText(message),
                   if (failure?.path case final String path when path.isNotEmpty)
                     SelectableText(path),
-                  Text(labels.hint),
-                  Align(
-                    alignment: .centerRight,
-                    child: FilledButton(onPressed: onExit, child: Text(tr.common.exit)),
+                  StyledText(labels.hint),
+                  Box(
+                    style: AppStyles.alignEnd,
+                    child: FilledButton(onPressed: onExit, child: StyledText(tr.common.exit)),
                   ),
                 ],
               ),

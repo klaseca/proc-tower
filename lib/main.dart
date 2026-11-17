@@ -11,6 +11,7 @@ import 'modules/process/process.dart';
 import 'modules/settings/settings.dart';
 import 'ui/layouts/main_layout.dart';
 import 'ui/screens/app_data_startup_error_app.dart';
+import 'ui/theme/app_styles.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,6 +78,7 @@ class App extends SetupWidget<App> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: .dark),
       ),
       themeMode: settingsStore.themeMode.value,
+      builder: (_, child) => AppStyleScope(child: child!),
       home: const MainLayout(),
     );
   }

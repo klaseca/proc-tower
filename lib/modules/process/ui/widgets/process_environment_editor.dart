@@ -1,8 +1,10 @@
 import 'package:jolt/jolt.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mix/mix.dart';
 
 import '/i18n/strings.g.dart';
+import '/ui/theme/app_styles.dart';
 
 import 'process_form_section_title.dart';
 
@@ -24,21 +26,17 @@ class ProcessEnvironmentEditor extends SetupWidget<ProcessEnvironmentEditor> {
       final labels = context.tr.processes.form;
       final rows = props().entries;
 
-      return Column(
-        mainAxisSize: .min,
-        crossAxisAlignment: .stretch,
-        spacing: 8,
+      return ColumnBox(
+        style: AppStyles.compactColumn,
         children: [
           ProcessFormSectionTitle(
             title: labels.environmentTitle,
             tooltip: labels.environmentDescription,
-            style: Theme.of(context).textTheme.titleMedium,
           ),
           for (final row in rows)
-            Row(
+            RowBox(
               key: row.key,
-              crossAxisAlignment: .center,
-              spacing: 8,
+              style: AppStyles.row,
               children: [
                 Expanded(
                   flex: 2,
@@ -60,8 +58,8 @@ class ProcessEnvironmentEditor extends SetupWidget<ProcessEnvironmentEditor> {
                     onChanged: (value) => updateRow(row.key, value: value),
                   ),
                 ),
-                Padding(
-                  padding: const .only(top: 16),
+                Box(
+                  style: BoxStyler().padding(.only(top: AppTokens.largeSpace())),
                   child: IconButton(
                     tooltip: labels.environmentRemove,
                     onPressed: () {
@@ -72,14 +70,14 @@ class ProcessEnvironmentEditor extends SetupWidget<ProcessEnvironmentEditor> {
                 ),
               ],
             ),
-          Align(
-            alignment: .centerLeft,
+          Box(
+            style: AppStyles.alignStart,
             child: TextButton.icon(
               onPressed: () {
                 rows.add((key: UniqueKey(), name: '', value: ''));
               },
               icon: const Icon(Icons.add),
-              label: Text(labels.environmentAdd),
+              label: StyledText(labels.environmentAdd),
             ),
           ),
         ],

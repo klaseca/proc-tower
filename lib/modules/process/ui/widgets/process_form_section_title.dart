@@ -1,9 +1,12 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:mix/mix.dart';
+
+import '/ui/theme/app_styles.dart';
 
 class ProcessFormSectionTitle extends StatelessWidget {
   final String title;
   final String tooltip;
-  final TextStyle? style;
+  final TextStyler? style;
 
   const ProcessFormSectionTitle({
     super.key,
@@ -14,19 +17,15 @@ class ProcessFormSectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      mainAxisSize: .min,
-      crossAxisAlignment: .center,
-      spacing: 8,
+    return RowBox(
+      style: AppStyles.row.mainAxisSize(.min),
       children: [
-        Flexible(child: Text(title, style: style)),
-        Padding(
-          padding: const .only(top: 4),
+        Flexible(child: StyledText(title, style: style ?? AppTextStyles.title)),
+        Box(
+          style: BoxStyler().padding(.only(top: 4)),
           child: Tooltip(
             message: tooltip,
-            child: Icon(Icons.help_outline, size: 18, color: theme.colorScheme.onSurfaceVariant),
+            child: StyledIcon(icon: Icons.help_outline, style: AppStyles.helpIcon),
           ),
         ),
       ],

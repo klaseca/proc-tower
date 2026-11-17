@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:jolt_setup/jolt_setup.dart';
+import 'package:mix/mix.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 typedef Renderer<T, U> = Widget Function(BuildContext, ColumnRendererContext<T, U>);
@@ -40,10 +41,11 @@ class ColumnCreator<T> {
                     return renderer(context, ColumnRendererContext.from(rendererContext));
                   }
 
-                  return Text(
+                  return StyledText(
                     formatter!(rendererContext.cell.value),
-                    overflow: .ellipsis,
-                    textAlign: rendererContext.column.textAlign.value,
+                    style: TextStyler()
+                        .overflow(.ellipsis)
+                        .textAlign(rendererContext.column.textAlign.value),
                   );
                 },
               )

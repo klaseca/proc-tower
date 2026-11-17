@@ -2,9 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mix/mix.dart';
 import 'package:trina_grid/trina_grid.dart';
 
 import '/i18n/strings.g.dart';
+import '/ui/theme/app_styles.dart';
 import '/ui/trina_grid/trina_grid_columns.dart';
 import '../../../domain/process.dart';
 import '../../process_ui_labels.dart';
@@ -16,6 +18,14 @@ typedef ProcessAction = void Function(ProcessColumnRendererContext);
 typedef ProcessLogsExpandedGetter = bool Function(String);
 
 typedef ToggleProcessLogs = void Function(String);
+
+final _statusBadgeStyle = BoxStyler()
+    .padding(.symmetric(horizontal: AppTokens.mediumSpace(), vertical: 4))
+    .borderRadius(.circular(999));
+final _logsStyle = BoxStyler()
+    .maxHeight(300)
+    .color(AppTokens.surfaceHigh())
+    .border(.bottom(BorderSideMix(color: AppTokens.outline())));
 
 List<TrinaColumn> createProcessesDataGridColumns({
   required Translations tr,
@@ -45,8 +55,8 @@ List<TrinaColumn> createProcessesDataGridColumns({
           final process = rendererContext.data;
           final isExpanded = isProcessLogsExpanded(process.id);
 
-          return Row(
-            spacing: 12,
+          return RowBox(
+            style: AppStyles.row.spacing(AppTokens.mediumSpace()),
             children: [
               IconButton(
                 onPressed: () => onToggleProcessLogs(process.id),
@@ -58,10 +68,9 @@ List<TrinaColumn> createProcessesDataGridColumns({
                 ),
               ),
               Expanded(
-                child: Text(
+                child: StyledText(
                   rendererContext.cellValue.value,
-                  overflow: .ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: .w600),
+                  style: AppTextStyles.processName,
                 ),
               ),
             ],
@@ -77,19 +86,13 @@ List<TrinaColumn> createProcessesDataGridColumns({
           final status = rendererContext.cellValue.value;
           final statusTheme = _statusTheme(context, status);
 
-          return Align(
-            alignment: .centerLeft,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: statusTheme.background,
-                borderRadius: .circular(999),
-              ),
-              child: Padding(
-                padding: const .symmetric(horizontal: 12, vertical: 4),
-                child: Text(
-                  status.label,
-                  style: TextStyle(color: statusTheme.foreground, fontWeight: .w600),
-                ),
+          return Box(
+            style: AppStyles.alignStart,
+            child: Box(
+              style: _statusBadgeStyle.color(statusTheme.background),
+              child: StyledText(
+                status.label,
+                style: AppTextStyles.badge.color(statusTheme.foreground),
               ),
             ),
           );
@@ -113,9 +116,8 @@ List<TrinaColumn> createProcessesDataGridColumns({
           final status = rendererContext.data.status.value;
           final showStartAction = status != .running && status != .starting;
 
-          return Wrap(
-            spacing: 8,
-            runSpacing: 8,
+          return WrapBox(
+            style: AppStyles.actions,
             children: [
               if (showStartAction)
                 IconButton.filledTonal(
@@ -171,50 +173,39 @@ RowWrapper createProcessesDataGridRowWrapper(ProcessLogsExpandedGetter isProcess
           return rowWidget;
         }
 
-        final colorScheme = Theme.of(context).colorScheme;
         final logs = process.logs.entries.value;
         final logsText = logs.isEmpty ? tr.processes.table.logsEmpty : logs.join('\n');
 
-        return Column(
-          crossAxisAlignment: .stretch,
+        return ColumnBox(
+          style: AppStyles.column,
           children: [
             rowWidget,
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHigh,
-                border: .fromLTRB(bottom: BorderSide(color: colorScheme.outlineVariant)),
-              ),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 300),
-                child: Listener(
-                  behavior: HitTestBehavior.opaque,
-                  onPointerSignal: (event) {
-                    if (event is! PointerScrollEvent ||
-                        !logsScrollController.hasClients ||
-                        logsScrollController.position.maxScrollExtent <= 0) {
-                      return;
-                    }
+            Box(
+              style: _logsStyle,
+              child: Listener(
+                behavior: HitTestBehavior.opaque,
+                onPointerSignal: (event) {
+                  if (event is! PointerScrollEvent ||
+                      !logsScrollController.hasClients ||
+                      logsScrollController.position.maxScrollExtent <= 0) {
+                    return;
+                  }
 
-                    GestureBinding.instance.pointerSignalResolver.register(event, (resolvedEvent) {
-                      final scrollEvent = resolvedEvent as PointerScrollEvent;
-                      logsScrollController.position.pointerScroll(scrollEvent.scrollDelta.dy);
-                    });
-                  },
-                  child: Padding(
-                    padding: const .all(16),
-                    child: Scrollbar(
+                  GestureBinding.instance.pointerSignalResolver.register(event, (resolvedEvent) {
+                    final scrollEvent = resolvedEvent as PointerScrollEvent;
+                    logsScrollController.position.pointerScroll(scrollEvent.scrollDelta.dy);
+                  });
+                },
+                child: Box(
+                  style: AppStyles.page,
+                  child: Scrollbar(
+                    controller: logsScrollController,
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
                       controller: logsScrollController,
-                      thumbVisibility: true,
-                      child: SingleChildScrollView(
-                        controller: logsScrollController,
-                        child: SelectableText(
-                          logsText,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                            fontFamily: 'monospace',
-                            height: 1.4,
-                          ),
-                        ),
+                      child: SelectableText(
+                        logsText,
+                        style: AppTextStyles.logs.resolve(context).spec.style,
                       ),
                     ),
                   ),

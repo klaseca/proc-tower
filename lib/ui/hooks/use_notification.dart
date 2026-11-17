@@ -1,6 +1,7 @@
 import 'package:jolt_setup/hooks.dart';
 import 'package:jolt_setup/jolt_setup.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mix/mix.dart';
 
 @defineHook
 void Function(String) useNotification() {
@@ -10,6 +11,6 @@ void Function(String) useNotification() {
   return (message) {
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+      ..showSnackBar(SnackBar(content: StyledText(message)));
   };
 }
